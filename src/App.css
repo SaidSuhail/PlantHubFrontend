@@ -1,10 +1,25 @@
-#root {
+/* #root {
   max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
+} */
+#root {
+  height: 100%;
+  padding: 0; /* remove padding here */
+  margin: 0; /* remove margin here */
+  width: 100vw; /* full viewport width */
+  box-sizing: border-box;
+  text-align: center;
 }
 
+/* Create a wrapper inside your app for max width content */
+
+.app-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+}
 .logo {
   height: 6em;
   padding: 1.5em;
@@ -39,4 +54,33 @@
 
 .read-the-docs {
   color: #888;
+}
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+html, body, #root {
+  height: 100%;
+}
+svg {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes scaleIn {
+  from { transform: scale(0.95); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.3s ease-out forwards;
+}
+
+.animate-scaleIn {
+  animation: scaleIn 0.3s ease-out forwards;
 }

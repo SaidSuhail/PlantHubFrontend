@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { toast, Toaster } from 'sonner';
 
 const LoginPage = () => {
@@ -34,11 +34,12 @@ const LoginPage = () => {
       });
 
       const user = res.data;
+      console.log(user);
       localStorage.setItem('token', user.token);
       localStorage.setItem('userName', user.userName);
       localStorage.setItem('role', user.role);
       localStorage.setItem('UserEmail', user.userEmail);
-
+// localStorage.setItem('Plan',user.plan)
       toast.success('Google login successful! Redirecting...');
       setTimeout(() => navigate('/'), 2500);
     } catch (err) {
@@ -70,8 +71,17 @@ const LoginPage = () => {
       localStorage.setItem('role', user.role);
       localStorage.setItem('UserEmail', user.userEmail);
 
-      toast.success('Login successful! Redirecting...');
-      setTimeout(() => navigate('/'), 2500);
+      
+       toast.success('Login successful! Redirecting...');
+    setTimeout(() => {
+      if (user.role === 'Admin') {
+        navigate('/admin');
+      } else if (user.role === 'Provider') {
+        navigate('/providers');
+      } else {
+        navigate('/');
+      }
+    }, 2500);
     } catch (err) {
       console.error('Login error:', err);
       setError(err.response?.data?.message || 'Server error. Please try again.');
@@ -83,10 +93,11 @@ const LoginPage = () => {
       {/* Left Side */}
       <div className="hidden md:flex md:w-1/2 bg--100 items-center justify-center p-10">
         <div>
+          <Link to="/">
           <div className="flex items-center mb-6">
             <span className="text-2xl font-bold text-green-800 mr-2">🌿</span>
             <h1 className="text-2xl font-bold text-green-800">PlantCareHub</h1>
-          </div>
+          </div></Link>
           <img
             src="Regsiterimg.jpg"
             alt="Plant"

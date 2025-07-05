@@ -51,11 +51,9 @@ function Home() {
   return (
     <div className="font-sans text-gray-800 ">
       {/* Hero Section */}
-      <div className="bg-white px-6 py-12 flex flex-col md:flex-row items-center gap-6 pt-24 pb-36 mr-12">
+      {/* <div className="bg-white px-6 py-12 flex flex-col md:flex-row items-center gap-6 pt-24 pb-36 mr-12">
         <div className="flex-1">
-          {/* <h1 className="text-4xl font-bold mb-4">
-            Your Personal Plant Care Assistant
-          </h1> */}
+          
 
           <TypeAnimation
             sequence={[
@@ -97,7 +95,62 @@ function Home() {
         <div className="flex-1 ml-14">
           <img src="/Regsiterimg.jpg" alt="Plant Care" className="rounded-lg" />
         </div>
-      </div>
+      </div> */}
+
+      <div className="bg-white px-6 py-12 pt-24 pb-36 flex flex-col md:flex-row items-center gap-10">
+  {/* Image at top on mobile, right side on desktop */}
+  <div className="flex-1 order-1 md:order-2">
+    <img
+      src="/Regsiterimg.jpg"
+      alt="Plant Care"
+      className="rounded-lg w-full h-auto object-cover"
+    />
+  </div>
+
+  {/* Text content */}
+  <div className="flex-1 text-center md:text-left order-2 md:order-1">
+    <TypeAnimation
+      sequence={[
+        "Your Personal Plant Care Assistant",
+        2000,
+        "",
+        1000,
+        "Helping You Grow Better",
+        2000,
+        "",
+        1000,
+      ]}
+      wrapper="h1"
+      className="text-3xl md:text-4xl font-bold mb-4"
+      cursor={true}
+      repeat={Infinity}
+    />
+
+    <p className="mb-4 text-base md:text-lg text-gray-700">
+      Expert care for your green companions
+    </p>
+    <p className="mb-6 text-sm md:text-base text-gray-600">
+      Discover personalized plant care services, expert advice, and a
+      thriving community of plant lovers.
+    </p>
+
+    <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
+      <button
+        className="bg-green-600 text-white px-6 py-2 rounded-md"
+        onClick={() => navigate("/services")}
+      >
+        Book a Service
+      </button>
+      <button
+        className="border border-green-600 text-green-600 px-6 py-2 rounded-md"
+        onClick={() => navigate("/library")}
+      >
+        Explore Plant Library
+      </button>
+    </div>
+  </div>
+</div>
+
 
       {/* Services Section */}
       <div className="bg-gray-50 py-16 px-6">

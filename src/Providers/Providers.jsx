@@ -16,7 +16,7 @@ import React from 'react';
 import Sidebar from './Sidebar';
 import { Outlet } from 'react-router-dom';
 
-function Provider() {
+function Providers() {
   return (
     <div className="flex flex-col md:flex-row  min-h-screen">
       {/* Sidebar */}
@@ -34,4 +34,4 @@ function Provider() {
   );
 }
 
-export default Provider;
+export default Providers;

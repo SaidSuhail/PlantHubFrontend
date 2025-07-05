@@ -21,7 +21,7 @@ import { Provider } from "react-redux";
 import store from './app/Store';
 import Footer from "./Components/Footer";
 // import Providers from "./Providers/providers";
-import Providers from "./Providers/providers";
+import Providers from "./Providers/Providers";
 import ScrollToTop from "./Components/ScrollToTop";
 import ProviderDashboard from "./Providers/ProviderDashboard";
 import AssignedBookings from "./Providers/AssignedBookings";

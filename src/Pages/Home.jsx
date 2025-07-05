@@ -56,23 +56,23 @@ function Home() {
           {/* <h1 className="text-4xl font-bold mb-4">
             Your Personal Plant Care Assistant
           </h1> */}
-          
-<TypeAnimation
-  sequence={[
-    'Your Personal Plant Care Assistant', // Types this
-    2000, // Waits 2s
-    '', // Deletes
-    1000, // Waits 1s
-    'Helping You Grow Better', // Second phrase
-    2000,
-    '', // Deletes again
-    1000,
-  ]}
-  wrapper="h1"
-  className="text-4xl font-bold mb-4"
-  cursor={true}
-  repeat={Infinity}
-/>
+
+          <TypeAnimation
+            sequence={[
+              "Your Personal Plant Care Assistant", // Types this
+              2000, // Waits 2s
+              "", // Deletes
+              1000, // Waits 1s
+              "Helping You Grow Better", // Second phrase
+              2000,
+              "", // Deletes again
+              1000,
+            ]}
+            wrapper="h1"
+            className="text-4xl font-bold mb-4"
+            cursor={true}
+            repeat={Infinity}
+          />
 
           <p className="mb-6 text-lg">Expert care for your green companions</p>
           <p className="mb-6 text-gray-600">

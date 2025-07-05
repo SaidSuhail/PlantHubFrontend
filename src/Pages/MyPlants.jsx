@@ -10,7 +10,6 @@
 //     (state) => state.users
 //   );
 
-  
 //     useEffect(() => {
 //       const token = localStorage.getItem("token");
 //       if (!token) return;
@@ -21,13 +20,12 @@
 //           "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"
 //         ];
 //       setUserId(userId);
-  
+
 //       if (userId) {
 //         // dispatch(fetchUserAddresses(userId)); // Your API call
 //               dispatch(fetchUserBookings(userId));
 //       }
 //     }, [dispatch]);
-  
 
 //   const allBookingItems = Array.isArray(userBookings)
 //     ? userBookings
@@ -130,11 +128,15 @@ function MyPlants() {
   const [searchTerm, setSearchTerm] = useState("");
   const [visibleItems, setVisibleItems] = useState([]);
   const [userId, setUserId] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedPlant, setSelectedPlant] = useState(null);
+  const [showDetailsModal, setShowDetailsModal] = useState(false);
+  const [detailPlant, setDetailPlant] = useState(null);
 
   const { userBookings, loadingBookings, bookingsError } = useSelector(
     (state) => state.users
   );
-const navigate = useNavigate();
+  const navigate = useNavigate();
   // On mount: decode userId from token and fetch bookings
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -154,7 +156,9 @@ const navigate = useNavigate();
   // Extract confirmed plant bookings
   const plantItems = Array.isArray(userBookings)
     ? userBookings
-        .filter((b) => b.bookingStatus === "Confirmed" && b.bookingItems?.length)
+        .filter(
+          (b) => b.bookingStatus === "Confirmed" && b.bookingItems?.length
+        )
         .flatMap((b) => b.bookingItems)
     : [];
 
@@ -202,7 +206,9 @@ const navigate = useNavigate();
             </p>
             <div className="flex justify-center gap-8 mt-6">
               <div className="text-center">
-                <div className="text-2xl font-bold text-white">{plantItems.length}</div>
+                <div className="text-2xl font-bold text-white">
+                  {plantItems.length}
+                </div>
                 <div className="text-green-200 text-sm">Plants</div>
               </div>
               <div className="text-center">
@@ -248,16 +254,20 @@ const navigate = useNavigate();
         ) : filteredItems.length === 0 ? (
           <div className="bg-white rounded-2xl p-12 text-center shadow-lg">
             <span className="text-6xl mb-6 block">🌿</span>
-            <h3 className="text-2xl font-bold text-gray-800 mb-4">No Plants Found</h3>
+            <h3 className="text-2xl font-bold text-gray-800 mb-4">
+              No Plants Found
+            </h3>
             <p className="text-gray-600 mb-6">
-              {searchTerm ? "No plants match your search." : "Start your plant journey today!"}
+              {searchTerm
+                ? "No plants match your search."
+                : "Start your plant journey today!"}
             </p>
             <button
               onClick={() => {
-                if(searchTerm){
-                setSearchTerm("");
-                }else{
-                  navigate("/library")
+                if (searchTerm) {
+                  setSearchTerm("");
+                } else {
+                  navigate("/library");
                 }
               }}
               className="bg-green-600 text-white px-8 py-3 rounded-xl font-medium hover:bg-green-700 transition-colors duration-200"
@@ -300,32 +310,56 @@ const navigate = useNavigate();
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2 text-green-600">
                       <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                      <span className="text-sm font-medium">Qty: {item.quantity}</span>
+                      <span className="text-sm font-medium">
+                        Qty: {item.quantity}
+                      </span>
                     </div>
                     <div className="text-right">
                       <p className="text-xs text-gray-500">Total Price</p>
-                      <p className="text-lg font-bold text-gray-800">₹{item.totalPrice}</p>
+                      <p className="text-lg font-bold text-gray-800">
+                        ₹{item.totalPrice}
+                      </p>
                     </div>
                   </div>
 
                   <div className="flex items-center gap-2 p-2 bg-green-50 rounded-lg">
                     <span>🌱</span>
-                    <span className="text-xs text-green-700 font-medium">Healthy & Growing</span>
+                    <span className="text-xs text-green-700 font-medium">
+                      Healthy & Growing
+                    </span>
                   </div>
 
                   <div className="flex gap-2 pt-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <button
+                    {/* <button
                       onClick={() => alert(`Care tips for ${item.plantName}`)}
+                      className="flex-1 bg-green-600 text-white py-2 px-3 rounded-lg text-sm font-medium hover:bg-green-700"
+                    >
+                      Care Tips
+                    </button> */}
+                    <button
+                      onClick={() => {
+                        setSelectedPlant(item);
+                        setShowModal(true);
+                      }}
                       className="flex-1 bg-green-600 text-white py-2 px-3 rounded-lg text-sm font-medium hover:bg-green-700"
                     >
                       Care Tips
                     </button>
                     <button
-                      onClick={() => alert(`Details for ${item.plantName}`)}
+                      onClick={() => {
+                        setDetailPlant(item);
+                        setShowDetailsModal(true);
+                      }}
                       className="flex-1 border border-green-600 text-green-600 py-2 px-3 rounded-lg text-sm font-medium hover:bg-green-50"
                     >
                       Details
                     </button>
+                    {/* <button
+                      onClick={() => alert(`Details for ${item.plantName}`)}
+                      className="flex-1 border border-green-600 text-green-600 py-2 px-3 rounded-lg text-sm font-medium hover:bg-green-50"
+                    >
+                      Details
+                    </button> */}
                   </div>
                 </div>
               </div>
@@ -335,26 +369,229 @@ const navigate = useNavigate();
 
         {/* Tips */}
         <div className="bg-gradient-to-r from-green-100 to-emerald-100 rounded-2xl p-8 text-center">
-          <h3 className="text-2xl font-bold text-green-800 mb-4">Plant Care Tips</h3>
+          <h3 className="text-2xl font-bold text-green-800 mb-4">
+            Plant Care Tips
+          </h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="space-y-2">
               <span className="text-3xl">💧</span>
               <h4 className="font-semibold text-green-700">Watering</h4>
-              <p className="text-sm text-green-600">Keep soil moist but not waterlogged</p>
+              <p className="text-sm text-green-600">
+                Keep soil moist but not waterlogged
+              </p>
             </div>
             <div className="space-y-2">
               <span className="text-3xl">☀️</span>
               <h4 className="font-semibold text-green-700">Light</h4>
-              <p className="text-sm text-green-600">Most plants need bright, indirect light</p>
+              <p className="text-sm text-green-600">
+                Most plants need bright, indirect light
+              </p>
             </div>
             <div className="space-y-2">
               <span className="text-3xl">🌡️</span>
               <h4 className="font-semibold text-green-700">Temperature</h4>
-              <p className="text-sm text-green-600">Maintain 65-75°F for optimal growth</p>
+              <p className="text-sm text-green-600">
+                Maintain 65-75°F for optimal growth
+              </p>
             </div>
           </div>
         </div>
       </div>
+      {/* {showModal && selectedPlant && (
+  <div className="fixed inset-0  bg-opacity-40 flex items-center justify-center z-50">
+    <div className="bg-white rounded-2xl p-6 shadow-xl w-full max-w-md space-y-4">
+      <h2 className="text-2xl font-bold text-green-700">Care Tips for {selectedPlant.plantName}</h2>
+      <ul className="list-disc pl-5 text-green-800 space-y-2">
+        <li>💧 Water regularly but avoid overwatering</li>
+        <li>☀️ Keep in bright, indirect sunlight</li>
+        <li>🌿 Prune dead leaves and rotate plant weekly</li>
+        <li>🌡️ Maintain a temperature between 18-24°C</li>
+      </ul>
+      <div className="text-right">
+        <button
+          onClick={() => setShowModal(false)}
+          className="mt-4 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+        >
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+)} */}
+      {showModal && selectedPlant && (
+        <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50 p-4 transition-opacity duration-300">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-md overflow-hidden transform transition-all duration-300 ease-out scale-95 animate-scaleIn">
+            {/* Header with gradient background */}
+            <div className="bg-gradient-to-r from-green-500 to-emerald-600 p-5">
+              <div className="flex justify-between items-center">
+                <div className="flex items-center space-x-3">
+                  <div className="bg-white/20 p-2 rounded-lg">
+                    <span className="text-2xl">🌿</span>
+                  </div>
+                  <h2 className="text-xl font-bold text-white">
+                    Care Guide for {selectedPlant.plantName}
+                  </h2>
+                </div>
+                <button
+                  onClick={() => setShowModal(false)}
+                  className="text-white/80 hover:text-white transition-colors text-2xl"
+                >
+                  &times;
+                </button>
+              </div>
+            </div>
+
+            {/* Care tips with enhanced styling */}
+            <div className="p-6 space-y-5">
+              <div className="space-y-4">
+                <div className="flex items-start">
+                  <div className=" p-2 rounded-lg mr-3">
+                    <span className="text-emerald-700 text-xl">💧</span>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-gray-800">Watering</h3>
+                    <p className="text-gray-600 mt-1">
+                      Water regularly but avoid overwatering
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start">
+                  <div className="bg-amber-100 p-2 rounded-lg mr-3">
+                    <span className="text-amber-700 text-xl">☀️</span>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-gray-800">Sunlight</h3>
+                    <p className="text-gray-600 mt-1">
+                      Keep in bright, indirect sunlight
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start">
+                  <div className="bg-lime-100 p-2 rounded-lg mr-3">
+                    <span className="text-lime-700 text-xl">✂️</span>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-gray-800">Maintenance</h3>
+                    <p className="text-gray-600 mt-1">
+                      Prune dead leaves and rotate plant weekly
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start">
+                  <div className="bg-blue-100 p-2 rounded-lg mr-3">
+                    <span className="text-blue-700 text-xl">🌡️</span>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-gray-800">Temperature</h3>
+                    <p className="text-gray-600 mt-1">
+                      Maintain between 18-24°C (64-75°F)
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="pt-4 flex justify-end">
+                <button
+                  onClick={() => setShowModal(false)}
+                  className="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-medium rounded-lg transition-colors duration-300 flex items-center"
+                >
+                  Got it!
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-5 w-5 ml-2"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      {showDetailsModal && detailPlant && (
+        <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-lg w-full max-w-xs overflow-hidden animate-scaleIn">
+            {/* Compact Header */}
+            <div className="flex justify-between items-center p-4 border-b">
+              <h2 className="text-lg font-semibold text-gray-800">
+                {detailPlant.plantName}
+              </h2>
+              <button
+                onClick={() => setShowDetailsModal(false)}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </button>
+            </div>
+
+            {/* Compact Image */}
+            <div className="p-4">
+              <img
+                src={detailPlant.plantImage}
+                alt={detailPlant.plantName}
+                className="w-full h-40 object-cover rounded-lg"
+                onError={(e) =>
+                  (e.target.src =
+                    "https://images.unsplash.com/photo-1485955900006-10f4d324d411?w=400")
+                }
+              />
+            </div>
+
+            {/* Minimalist Details */}
+            <div className="px-4 pb-4 space-y-3">
+              <div className="flex justify-between items-center border-b pb-2">
+                <span className="text-sm text-gray-500">Quantity</span>
+                <span className="font-medium">{detailPlant.quantity}</span>
+              </div>
+
+              <div className="flex justify-between items-center border-b pb-2">
+                <span className="text-sm text-gray-500">Total Price</span>
+                <span className="font-medium text-green-600">
+                  ₹{detailPlant.totalPrice}
+                </span>
+              </div>
+
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-gray-500">Status</span>
+                <span className="inline-flex items-center text-sm text-green-600">
+                  <span className="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
+                  Healthy
+                </span>
+              </div>
+            </div>
+
+            {/* Simple Footer */}
+            <div className="bg-gray-50 px-4 py-3 flex justify-end">
+              <button
+                onClick={() => setShowDetailsModal(false)}
+                className="px-4 py-2 bg-gray-800 text-white text-sm rounded-lg hover:bg-gray-700 transition-colors"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

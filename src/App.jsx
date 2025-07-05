@@ -20,6 +20,7 @@ import PlanManagement from "./Admin/PlanManagement";
 import { Provider } from "react-redux";
 import store from './app/Store';
 import Footer from "./Components/Footer";
+// import Providers from "./Providers/providers";
 import Providers from "./Providers/providers";
 import ScrollToTop from "./Components/ScrollToTop";
 import ProviderDashboard from "./Providers/ProviderDashboard";

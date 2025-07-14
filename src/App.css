@@ -97,3 +97,9 @@ svg {
 .animate-in {
   animation: fade-in 0.3s ease-out, zoom-in 0.3s ease-out;
 }
+/* Chrome, Safari, Edge, Opera */
+input[type='number']::-webkit-outer-spin-button,
+input[type='number']::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}

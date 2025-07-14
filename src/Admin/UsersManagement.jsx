@@ -24,18 +24,22 @@ import { toast, Toaster } from "sonner";
 const UsersManagement = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const usersPerPage = 5;
   const [showAddUserModal, setShowAddUserModal] = useState(false);
-
+  const [statusFilter, setStatusFilter] = useState("All");
+  const [showFilterDropdown, setShowFilterDropdown] = useState(false);
   const [formData, setFormData] = useState({
     userName: "",
     userEmail: "",
     password: "",
     phone: "",
   });
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
+
   const handleAddUser = (e) => {
     e.preventDefault();
     dispatch(registerUser(formData)).then((res) => {
@@ -43,7 +47,7 @@ const UsersManagement = () => {
         toast.success("User Created Successfull");
         setShowAddUserModal(false);
         setFormData({ userName: "", userEmail: "", password: "", phone: "" });
-        dispatch(fetchUsers()); // refresh list
+        dispatch(fetchUsers());
       } else {
         toast.error("Failed To Create User");
       }
@@ -53,16 +57,19 @@ const UsersManagement = () => {
   const dispatch = useDispatch();
   const { users, loadingUsers, errorUsers } = useSelector(
     (state) => state.users
-  ); // adjust slice name
+  );
 
-  console.log("new users", users);
   useEffect(() => {
     dispatch(fetchUsers());
   }, [dispatch]);
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery, statusFilter]);
 
   const handleBlockUnblock = (userId) => {
     dispatch(blockUnblockUser(userId));
   };
+
   const allUsers = users.filter((user) => user.role === "User");
   const totalUsers = allUsers.length;
   const activeUsers = allUsers.filter((user) => !user.isBlocked).length;
@@ -70,7 +77,7 @@ const UsersManagement = () => {
   const newUsers = allUsers.filter((user) => {
     const createdDate = new Date(user.createdAt);
     const daysDiff = (new Date() - createdDate) / (1000 * 60 * 60 * 24);
-    return daysDiff <= 7; // joined within the last 7 days
+    return daysDiff <= 7;
   }).length;
 
   const stats = [
@@ -100,7 +107,24 @@ const UsersManagement = () => {
     },
   ];
 
-  const filteredUsers = users.filter((user) => user.role === "User");
+  const filteredUsers = users
+    .filter((user) => user.role === "User")
+    .filter(
+      (user) =>
+        user.userName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        user.userEmail.toLowerCase().includes(searchQuery.toLowerCase())
+    )
+    .filter((user) => {
+      if (statusFilter === "Active") return !user.isBlocked;
+      if (statusFilter === "Blocked") return user.isBlocked;
+      return true; // "All"
+    });
+
+  const startIndex = (currentPage - 1) * usersPerPage;
+  const endIndex = startIndex + usersPerPage;
+  const paginatedUsers = filteredUsers.slice(startIndex, endIndex);
+  const totalPages = Math.ceil(filteredUsers.length / usersPerPage);
+
   const formatDate = (isoString) => {
     const date = new Date(isoString);
     return date.toLocaleString("en-IN", {
@@ -142,14 +166,16 @@ const UsersManagement = () => {
     return <p className="p-4 text-center text-red-600">Error: {errorUsers}</p>;
 
   return (
-    <div className="p-4 md:p-6 bg-gray-50 min-h-screen">
+    <div className="p-4 md:p-6 bg-gradient-to-br from-emerald-50 to-white  min-h-screen rounded-3xl">
       {/* Header */}
-      <Toaster position="top-right" richColors/>
+      <Toaster position="top-right" richColors />
       <div className="mb-6">
-        <h1 className="text-2xl md:text-3xl font-bold text-gray-800">
+        <h1 className="text-2xl md:text-3xl font-bold text-emerald-700">
           User Management
         </h1>
-        <p className="text-gray-500 mt-1">Manage and monitor user accounts</p>
+        <p className="text-emerald-500 mt-1">
+          Manage and monitor user accounts
+        </p>
       </div>
 
       {/* Stats Cards */}
@@ -195,10 +221,37 @@ const UsersManagement = () => {
             />
           </div>
           <div className="flex gap-2">
-            <button className="flex items-center gap-2 px-4 py-2 border border-gray-200 rounded-lg text-gray-600 hover:bg-gray-50">
-              <Filter className="h-4 w-4" />
-              <span>Filters</span>
-            </button>
+            <div className="relative">
+              <button
+                onClick={() => setShowFilterDropdown((prev) => !prev)}
+                className="flex items-center gap-2 px-4 py-2 border border-gray-200 rounded-lg text-gray-600 hover:bg-gray-50"
+              >
+                <Filter className="h-4 w-4" />
+                <span>Filters</span>
+                <ChevronDown className="h-4 w-4" />
+              </button>
+
+              {showFilterDropdown && (
+                <div className="absolute mt-2 w-40 bg-white border border-gray-200 rounded-lg shadow-lg z-10">
+                  {["All", "Active", "Blocked"].map((status) => (
+                    <button
+                      key={status}
+                      className={`w-full text-left px-4 py-2 hover:bg-gray-100 text-sm ${
+                        statusFilter === status
+                          ? "bg-gray-100 font-semibold"
+                          : ""
+                      }`}
+                      onClick={() => {
+                        setStatusFilter(status);
+                        setShowFilterDropdown(false);
+                      }}
+                    >
+                      {status}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
 
             <button
               className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
@@ -212,7 +265,6 @@ const UsersManagement = () => {
 
       {/* User Table */}
       <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-        {/* Table */}
         <div className="overflow-x-auto">
           <table className="w-full text-sm text-left">
             <thead className="bg-gray-50 text-gray-500 border-b">
@@ -227,11 +279,11 @@ const UsersManagement = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
-              {Array.isArray(filteredUsers) &&
-                filteredUsers.map((user, index) => (
+              {Array.isArray(paginatedUsers) &&
+                paginatedUsers.map((user, index) => (
                   <tr key={index} className="hover:bg-gray-50">
                     <td className="py-4 px-4 font-medium text-gray-800">
-                      {index + 1}
+                      {startIndex + index + 1}
                     </td>
                     <td className="py-4 px-4">
                       <div className="flex items-center gap-4">
@@ -282,8 +334,11 @@ const UsersManagement = () => {
         {/* Pagination */}
         <div className="flex flex-col sm:flex-row justify-between items-center p-4 border-t border-gray-100">
           <p className="text-gray-500 text-sm mb-4 sm:mb-0">
-            Showing 1 to 5 of 2,456 results
+            Showing {startIndex + 1} to{" "}
+            {Math.min(startIndex + usersPerPage, filteredUsers.length)} of{" "}
+            {filteredUsers.length} results
           </p>
+
           <div className="flex items-center gap-2">
             <button
               className="p-2 rounded-lg border border-gray-200 hover:bg-gray-50 disabled:opacity-50"
@@ -293,7 +348,7 @@ const UsersManagement = () => {
               <ChevronLeft className="h-4 w-4" />
             </button>
 
-            {[1, 2, 3, 4, 5].map((page) => (
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
               <button
                 key={page}
                 className={`w-8 h-8 rounded-lg ${

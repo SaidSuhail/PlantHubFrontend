@@ -1,16 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  blockUnblockUser,
-  fetchUsers,
-  registerUser,
-} from "../Features/userSlice";
-import { toast } from "sonner";
-import { changeUserRole } from "../Features/adminSlice";
+import { blockUnblockUser, fetchUsers } from "../Features/userSlice";
 
 const ServiceProviders = () => {
   const [filterStatus, setFilterStatus] = useState("All Status");
-
+  const [searchQuery, setSearchQuery] = useState("");
   const dispatch = useDispatch();
   const { users, loadingUsers, errorUsers } = useSelector(
     (state) => state.users
@@ -21,131 +15,52 @@ const ServiceProviders = () => {
   const activeProviders = providers.filter((p) => !p.isBlocked).length;
   const blockedProviders = providers.filter((p) => p.isBlocked).length;
 
-  const isToday = (dateStr) => {
-    const date = new Date(dateStr);
-    const today = new Date();
-    return (
-      date.getDate() === today.getDate() &&
-      date.getMonth() === today.getMonth() &&
-      date.getFullYear() === today.getFullYear()
-    );
-  };
-
-  const [showAddProviderModal, setShowAddProviderModal] = useState(false);
-
-  const [providerFormData, setProviderFormData] = useState({
-    userName: "",
-    userEmail: "",
-    password: "",
-    phone: "",
-  });
-  const handleProviderInputChange = (e) => {
-    const { name, value } = e.target;
-    setProviderFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleAddProvider = (e) => {
-    e.preventDefault();
-
-    // Only send valid registration fields
-    const { userName, userEmail, password, phone } = providerFormData;
-
-    dispatch(registerUser({ userName, userEmail, password, phone })).then(
-      (res) => {
-        if (res.meta.requestStatus === "fulfilled") {
-          const newUserId = res.payload?.id;
-
-          if (newUserId) {
-            // Now assign Provider role
-            dispatch(
-              changeUserRole({ userId: newUserId, newRole: "Provider" })
-            ).then((roleRes) => {
-              if (roleRes.meta.requestStatus === "fulfilled") {
-                toast.success("Provider Created and Role Assigned");
-                setShowAddProviderModal(false);
-                setProviderFormData({
-                  userName: "",
-                  userEmail: "",
-                  password: "",
-                  phone: "",
-                });
-                dispatch(fetchUsers());
-              } else {
-                toast.error("User created, but role assignment failed");
-              }
-            });
-          } else {
-            toast.error("User created, but no ID returned");
-          }
-        } else {
-          toast.error("Failed to register provider");
-        }
-      }
-    );
-  };
-
-  const approvedToday = providers.filter(
-    (p) => !p.isBlocked && isToday(p.updatedAt)
-  ).length;
-  const rejectedToday = providers.filter(
-    (p) => p.isBlocked && isToday(p.updatedAt)
-  ).length;
-
   useEffect(() => {
     dispatch(fetchUsers());
   }, [dispatch]);
   console.log(users);
 
-  // const metrics = [
-  //   { title: "Total Service Providers", value: 248 },
-  //   { title: "Active Providers", value: 186 },
-  //   { title: "Pending Approval", value: 12 },
-  //   { title: "Average Rating", value: "4.8/5" },
-  // ];
   const metrics = [
     { title: "Total Service Providers", value: totalProviders },
     { title: "Active Providers", value: activeProviders },
     { title: "Blocked Providers", value: blockedProviders },
-    { title: "Approved Today", value: approvedToday },
-    { title: "Rejected Today", value: rejectedToday },
   ];
   const getStatus = (user) => {
     if (user.isBlocked) return "Suspended";
     return "Active";
   };
 
-  // const filteredProviders = users
-  //   .filter((u) => u.role === "Provider")
-  //   .filter((u) =>
-  //     filterStatus === "All Status" ? true : u.status === filterStatus
-  //   );
   const filteredProviders = users
     .filter((u) => u.role === "Provider")
     .filter((u) =>
       filterStatus === "All Status" ? true : getStatus(u) === filterStatus
+    )
+    .filter((u) =>
+      `${u.userName} ${u.userEmail}`
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase())
     );
 
   const statusColors = {
     Active: "bg-green-100 text-green-800",
-    Pending: "bg-yellow-100 text-yellow-800",
     Suspended: "bg-red-100 text-red-800",
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4 md:p-8">
+    <div className="min-h-screen bg-gradient-to-br from-emerald-50 to-white p-4 md:p-8 rounded-3xl">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-2xl md:text-3xl font-bold text-gray-800">
+          <h1 className="text-2xl md:text-3xl font-bold text-emerald-700">
             Service Providers
           </h1>
-          <p className="text-gray-600 mt-2">
+          <p className="text-emerald-600 mt-2">
             Manage and track your service providers
           </p>
         </div>
 
         {/* Metrics */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-8">
           {metrics.map((metric, i) => (
             <div
               key={i}
@@ -166,16 +81,7 @@ const ServiceProviders = () => {
           <div className="flex flex-col md:flex-row md:items-center md:justify-between">
             <div className="flex items-center space-x-4">
               <span className="text-gray-700 font-medium">Filter</span>
-              {/* <select
-                className="bg-gray-50 border border-gray-300 rounded-lg px-4 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500"
-                value={filterStatus}
-                onChange={(e) => setFilterStatus(e.target.value)}
-              >
-                <option>All Status</option>
-                <option>Active</option>
-                <option>Pending</option>
-                <option>Suspended</option>
-              </select> */}
+
               <select
                 className="bg-gray-50 border border-gray-300 rounded-lg px-4 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500"
                 value={filterStatus}
@@ -187,18 +93,18 @@ const ServiceProviders = () => {
               </select>
             </div>
 
-            <div className="flex space-x-3 mt-4 md:mt-0">
-              <button
-                className="flex items-center px-4 py-2 text-white bg-green-600 rounded-lg hover:bg-green-700"
-                onClick={() => setShowAddProviderModal(true)}
-              >
-                {/* Add New Provider Icon */}
-                Add New Provider
-              </button>
+            {/* 🔍 Search Bar */}
+            <div className="mt-4 md:mt-0">
+              <input
+                type="text"
+                placeholder="Search by name or email"
+                className="bg-gray-50 border border-gray-300 rounded-lg px-4 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
             </div>
           </div>
         </div>
-
         {/* Providers Table */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
           <div className="overflow-x-auto">
@@ -248,12 +154,10 @@ const ServiceProviders = () => {
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span
                         className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                          provider.isBlocked
-                            ? "bg-red-100 text-red-800"
-                            : "bg-green-100 text-green-800"
+                          statusColors[getStatus(provider)]
                         }`}
                       >
-                        {provider.isBlocked ? "Blocked" : "Active"}
+                        {getStatus(provider)}
                       </span>
                     </td>
 
@@ -286,63 +190,6 @@ const ServiceProviders = () => {
               </tbody>
             </table>
           </div>
-          {showAddProviderModal && (
-            <div className="fixed inset-0 backdrop-blur-sm flex items-center justify-center p-4">
-              <div className="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden">
-                <div className="relative bg-gradient-to-r from-green-500 to-emerald-600 p-6">
-                  <h2 className="text-2xl font-bold text-white">
-                    Create New Provider
-                  </h2>
-                  <p className="text-emerald-100 mt-1">
-                    Register A Service Provider
-                  </p>
-                  <button
-                    onClick={() => setShowAddProviderModal(false)}
-                    className="absolute top-5 right-5 text-white hover:text-emerald-200"
-                  >
-                    ✕
-                  </button>
-                </div>
-
-                <form onSubmit={handleAddProvider} className="p-6 space-y-5">
-                  {/* Input Fields */}
-                  {["userName", "userEmail", "password", "phone"].map(
-                    (field, i) => (
-                      <input
-                        key={i}
-                        type={field === "password" ? "password" : "text"}
-                        name={field}
-                        value={providerFormData[field]}
-                        onChange={handleProviderInputChange}
-                        placeholder={
-                          field.charAt(0).toUpperCase() + field.slice(1)
-                        }
-                        className="w-full px-4 py-3 border border-gray-200 rounded-lg"
-                        required={field !== "phone"}
-                      />
-                    )
-                  )}
-
-                  {/* Actions */}
-                  <div className="flex justify-end gap-2 pt-2">
-                    <button
-                      type="button"
-                      onClick={() => setShowAddProviderModal(false)}
-                      className="px-5 py-2.5 bg-gray-100 text-gray-700 rounded-lg"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      type="submit"
-                      className="px-5 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700"
-                    >
-                      Save
-                    </button>
-                  </div>
-                </form>
-              </div>
-            </div>
-          )}
 
           {/* Pagination */}
           {/* ... (same as before) */}

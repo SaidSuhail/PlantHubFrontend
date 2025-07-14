@@ -1,14 +1,3 @@
-// import React from 'react'
-
-// function Sidebar() {
-//   return (
-//     <div>
-//       <h1>Sidebar</h1>
-//     </div>
-//   )
-// }
-
-// export default Sidebar
 import React, { useState, useEffect } from "react";
 import {
   Home,
@@ -71,7 +60,7 @@ function Sidebar() {
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (isOpen && !event.target.closest(".sidebar-container")) {
-        setIsOpen(false);
+        setIsOpen(true);
       }
     };
 
@@ -88,14 +77,6 @@ function Sidebar() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    setTimeout(() => {
-      toast.success("Provider Logout Successfully");
-      navigate("/login");
-    }, 200);
-  };
 
   return (
     <>
@@ -121,7 +102,7 @@ function Sidebar() {
       {/* Backdrop for mobile */}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-20 lg:hidden"
+          className="fixed inset-0  bg-opacity-50 z-20 lg:hidden"
           onClick={() => setIsOpen(false)}
         ></div>
       )}
@@ -199,12 +180,7 @@ function Sidebar() {
               </p>
               <p className="text-xs text-emerald-600">Plant Specialist</p>
             </div>
-            {/* <button
-              onClick={handleLogout}
-              className="p-2 text-emerald-700 hover:bg-emerald-100 rounded-full"
-            >
-              <LogOut size={18} />
-            </button> */}
+
             <button
               onClick={() => setShowConfirmLogout(true)}
               className="p-2 rounded-full bg-green-600 text-white hover:bg-green-700"
@@ -216,36 +192,35 @@ function Sidebar() {
         </div>
       </div>
       {showConfirmLogout && (
-  <div className="fixed inset-0  bg-opacity-50 z-[9999] flex items-center justify-center pl-20">
-    <div className="bg-white p-6 rounded-lg shadow-lg w-80">
-      <h2 className="text-lg font-semibold mb-4 text-gray-800">
-        Confirm Logout
-      </h2>
-      <p className="text-sm text-gray-600 mb-6">
-        Are you sure you want to logout?
-      </p>
-      <div className="flex justify-end gap-4">
-        <button
-          onClick={() => setShowConfirmLogout(false)}
-          className="px-4 py-2 text-sm bg-gray-200 hover:bg-gray-300 rounded"
-        >
-          Cancel
-        </button>
-        <button
-          onClick={() => {
-            localStorage.removeItem("token");
-            toast.success("Provider Logout Successfully");
-            navigate("/login");
-          }}
-          className="px-4 py-2 text-sm bg-red-600 text-white hover:bg-red-700 rounded"
-        >
-          Logout
-        </button>
-      </div>
-    </div>
-  </div>
-)}
-
+        <div className="fixed inset-0  bg-opacity-50 z-[9999] flex items-center justify-center pl-20">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-80">
+            <h2 className="text-lg font-semibold mb-4 text-gray-800">
+              Confirm Logout
+            </h2>
+            <p className="text-sm text-gray-600 mb-6">
+              Are you sure you want to logout?
+            </p>
+            <div className="flex justify-end gap-4">
+              <button
+                onClick={() => setShowConfirmLogout(false)}
+                className="px-4 py-2 text-sm bg-gray-200 hover:bg-gray-300 rounded"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  localStorage.removeItem("token");
+                  toast.success("Provider Logout Successfully");
+                  navigate("/login");
+                }}
+                className="px-4 py-2 text-sm bg-red-600 text-white hover:bg-red-700 rounded"
+              >
+                Logout
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }

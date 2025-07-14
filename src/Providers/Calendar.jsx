@@ -115,18 +115,18 @@ const Calendar = () => {
   const upcomingEvents = events.slice(0, 3);
 
   return (
-    <div className="min-h-screen rounded-4xl bg-gradient-to-br from-blue-50 via-white to-purple-50 p-4 sm:p-6 ml-38">
+    <div className="min-h-screen rounded-4xl  bg-gradient-to-br from-emerald-50 to-white p-4 sm:p-6 lg:ml-48">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-8 gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
-              <div className="p-2 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl">
+            <h1 className="text-3xl font-bold text-emerald-700 flex items-center gap-3">
+              <div className="p-2 bg-gradient-to-r from-emerald-500 to-green-600 rounded-xl">
                 <CalendarDays className="w-8 h-8 text-white" />
               </div>
               Calendar
             </h1>
-            <p className="text-gray-600 mt-2">Manage your schedule and events</p>
+            <p className="text-emerald-600 mt-2">Manage your schedule and events</p>
           </div>
 
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 w-full lg:w-auto">
@@ -136,7 +136,8 @@ const Calendar = () => {
               <input
                 type="text"
                 placeholder="Search events..."
-                className="pl-10 pr-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full"
+                className="pl-10 pr-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent w-full"
+
               />
             </div>
 
@@ -148,7 +149,7 @@ const Calendar = () => {
                   onClick={() => setView(viewType)}
                   className={`px-4 py-2 rounded-lg text-sm font-medium transition-all capitalize ${
                     view === viewType
-                      ? 'bg-blue-500 text-white shadow-sm'
+                      ? 'bg-emerald-500 text-white shadow-sm'
                       : 'text-gray-600 hover:text-gray-900'
                   }`}
                 >
@@ -157,7 +158,7 @@ const Calendar = () => {
               ))}
             </div>
 
-            <button className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white px-6 py-2 rounded-xl flex items-center space-x-2 transition-all shadow-lg hover:shadow-xl w-full sm:w-auto justify-center">
+            <button className="bg-gradient-to-r from-emerald-600 to-green-400 hover:from-green-400 hover:to-emerald-600 text-white px-6 py-2 rounded-xl flex items-center space-x-2 transition-all shadow-lg hover:shadow-xl w-full sm:w-auto justify-center">
               <Plus className="w-4 h-4" />
               <span>Add Event</span>
             </button>
@@ -169,7 +170,7 @@ const Calendar = () => {
           <div className="xl:col-span-3">
             <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
               {/* Calendar Header */}
-              <div className="p-6 border-b border-gray-100 bg-gradient-to-r from-blue-50 to-purple-50">
+              <div className="p-6 border-b border-gray-100 bg-gradient-to-r from-emerald-50 to-green-50">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-4">
                     <button
@@ -214,18 +215,18 @@ const Calendar = () => {
                     <div
                       key={index}
                       onClick={() => setSelectedDate(date)}
-                      className={`min-h-24 p-2 border-b border-r border-gray-100 cursor-pointer transition-all hover:bg-blue-50 ${
+                      className={`min-h-24 p-2 border-b border-r border-gray-100 cursor-pointer transition-all hover:bg-emerald-50 ${
                         !date ? 'bg-gray-50' : ''
                       } ${
-                        isToday(date) ? 'bg-blue-100 border-blue-300' : ''
+                        isToday(date) ? 'bg-emerald-100 border-emerald-300' : ''
                       } ${
-                        isSelectedDate ? 'bg-blue-200 border-blue-400' : ''
+                        isSelectedDate ? 'bg-emerald-200 border-emerald-400' : ''
                       }`}
                     >
                       {date && (
                         <>
                           <div className={`text-sm font-medium mb-1 ${
-                            isToday(date) ? 'text-blue-700' : 'text-gray-900'
+                            isToday(date) ? 'text-green-700' : 'text-gray-900'
                           }`}>
                             {date.getDate()}
                           </div>
@@ -284,7 +285,7 @@ const Calendar = () => {
             {/* Upcoming Events */}
             <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6">
               <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center">
-                <div className="w-2 h-2 bg-blue-500 rounded-full mr-3"></div>
+                <div className="w-2 h-2 bg-emerald-500 rounded-full mr-3"></div>
                 Upcoming Events
               </h3>
               <div className="space-y-4">
@@ -314,20 +315,20 @@ const Calendar = () => {
             </div>
 
             {/* Quick Actions */}
-            <div className="bg-gradient-to-br from-purple-500 to-blue-600 rounded-2xl shadow-lg p-6 text-white">
+            <div className="bg-gradient-to-br from-emerald-500 to-green-600 rounded-2xl shadow-lg p-6 text-white">
               <h3 className="text-lg font-bold mb-4">Quick Actions</h3>
               <div className="space-y-3">
                 <button className="w-full bg-white bg-opacity-20 hover:bg-opacity-30 rounded-xl p-3 text-left transition-all">
-                  <div className="font-medium">Schedule Meeting</div>
-                  <div className="text-sm opacity-90">Create a new meeting</div>
+                  <div className="font-medium text-black">Schedule Meeting</div>
+                  <div className="text-sm opacity-90 text-black">Create a new meeting</div>
                 </button>
                 <button className="w-full bg-white bg-opacity-20 hover:bg-opacity-30 rounded-xl p-3 text-left transition-all">
-                  <div className="font-medium">Set Reminder</div>
-                  <div className="text-sm opacity-90">Add a quick reminder</div>
+                  <div className="font-medium text-black">Set Reminder</div>
+                  <div className="text-sm opacity-90 text-black">Add a quick reminder</div>
                 </button>
                 <button className="w-full bg-white bg-opacity-20 hover:bg-opacity-30 rounded-xl p-3 text-left transition-all">
-                  <div className="font-medium">View Analytics</div>
-                  <div className="text-sm opacity-90">Check your schedule stats</div>
+                  <div className="font-medium text-black">View Analytics</div>
+                  <div className="text-sm opacity-90 text-black">Check your schedule stats</div>
                 </button>
               </div>
             </div>

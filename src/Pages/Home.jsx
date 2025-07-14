@@ -108,7 +108,7 @@ function Home() {
   </div>
 
   {/* Text content */}
-  <div className="flex-1 text-center md:text-left order-2 md:order-1">
+  <div className="flex-1 text-center md:text-center order-2 md:order-1">
     <TypeAnimation
       sequence={[
         "Your Personal Plant Care Assistant",
@@ -126,15 +126,15 @@ function Home() {
       repeat={Infinity}
     />
 
-    <p className="mb-4 text-base md:text-lg text-gray-700">
+    <p className="mb-4 text-base text-center md:text-lg text-gray-700">
       Expert care for your green companions
     </p>
-    <p className="mb-6 text-sm md:text-base text-gray-600">
+    <p className="mb-6 text-center text-sm md:text-base text-gray-600">
       Discover personalized plant care services, expert advice, and a
       thriving community of plant lovers.
     </p>
 
-    <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
+    <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-center">
       <button
         className="bg-green-600 text-white px-6 py-2 rounded-md"
         onClick={() => navigate("/services")}

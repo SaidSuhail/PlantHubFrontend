@@ -8,17 +8,22 @@ import { requestProviderRole } from "../Features/adminSlice";
 
 function UserProfileModal({ isOpen, onClose }) {
   const currentUser = useSelector((state) => state.auth?.currentUser);
+  console.log("modaldataaaaaa", currentUser);
   const { roleRequestStatus, roleRequestError } = useSelector(
     (state) => state.admin
   );
-  const userId = useSelector((state)=>state.users?.userId) ;
-  console.log("555555555555",userId)
-   const fullState = useSelector((state) => state);
-    console.log("🧠 Full Redux state from Notification.jsx in profileeeeee:", fullState);
+  const userId = useSelector((state) => state.users?.userId);
+  console.log("555555555555", userId);
+  const fullState = useSelector((state) => state);
+  console.log(
+    "🧠 Full Redux state from Notification.jsx in profileeeeee:",
+    fullState
+  );
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [showConfirmLogout, setShowConfirmLogout] = useState(false);
   const dispatch = useDispatch();
   const { profile, loadingProfile } = useSelector((state) => state.users);
+  console.log("fffffffffffffffff", profile);
   const navigate = useNavigate();
   const fileInputRef = React.useRef();
   const handleRequestProvider = () => {
@@ -351,29 +356,29 @@ function UserProfileModal({ isOpen, onClose }) {
               Logout
             </motion.button> */}
             {userId ? (
-  <motion.button
-    whileHover={{ scale: 1.05 }}
-    whileTap={{ scale: 0.95 }}
-    onClick={() => setShowConfirmLogout(true)}
-    className="flex items-center gap-2 text-red-600 hover:text-red-800 font-medium px-4 py-2 rounded-lg"
-  >
-    <FiLogOut className="text-lg" />
-    Logout
-  </motion.button>
-) : (
-  <motion.button
-    whileHover={{ scale: 1.05 }}
-    whileTap={{ scale: 0.95 }}
-    onClick={() => {
-      onClose();
-      navigate("/login");
-    }}
-    className="flex items-center gap-2 text-green-700 hover:text-green-900 font-medium px-4 py-2 rounded-lg"
-  >
-    <FiLock className="text-lg"/>
-    Login
-  </motion.button>
-)}
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => setShowConfirmLogout(true)}
+                className="flex items-center gap-2 text-red-600 hover:text-red-800 font-medium px-4 py-2 rounded-lg"
+              >
+                <FiLogOut className="text-lg" />
+                Logout
+              </motion.button>
+            ) : (
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => {
+                  onClose();
+                  navigate("/login");
+                }}
+                className="flex items-center gap-2 text-green-700 hover:text-green-900 font-medium px-4 py-2 rounded-lg"
+              >
+                <FiLock className="text-lg" />
+                Login
+              </motion.button>
+            )}
 
             {currentUser?.role !== "Provider" &&
               currentUser?.role !== "Admin" && (
@@ -440,33 +445,31 @@ function UserProfileModal({ isOpen, onClose }) {
               >
                 Logout
               </button> */}
-                      {userId ? (
-          <button
-            onClick={() => {
-              localStorage.removeItem("token");
-              localStorage.clear();
-              setShowConfirmLogout(false);
-              onClose();
-              navigate("/login");
-              
-            }}
-            className="px-4 py-2 rounded bg-red-600 text-white hover:bg-red-700"
-          >
-            Logout
-          </button>
-        ) : (
-          <button
-            onClick={() => {
-              setShowConfirmLogout(false);
-              onClose();
-              navigate("/login");
-            }}
-            className="px-4 py-2 rounded bg-green-600 text-white hover:bg-green-700"
-          >
-            Login
-          </button>
-        )}
-
+              {userId ? (
+                <button
+                  onClick={() => {
+                    localStorage.removeItem("token");
+                    localStorage.clear();
+                    setShowConfirmLogout(false);
+                    onClose();
+                    navigate("/login");
+                  }}
+                  className="px-4 py-2 rounded bg-red-600 text-white hover:bg-red-700"
+                >
+                  Logout
+                </button>
+              ) : (
+                <button
+                  onClick={() => {
+                    setShowConfirmLogout(false);
+                    onClose();
+                    navigate("/login");
+                  }}
+                  className="px-4 py-2 rounded bg-green-600 text-white hover:bg-green-700"
+                >
+                  Login
+                </button>
+              )}
             </div>
           </div>
         </div>

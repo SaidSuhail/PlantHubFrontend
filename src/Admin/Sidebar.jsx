@@ -1,172 +1,3 @@
-// // Sidebar.jsx
-// import React from 'react';
-// import {
-//   Home,
-//   Users,
-//   Calendar,
-//   Database,
-//   UserCheck,
-//   Clock,
-//   Settings,
-//   BadgeCheck,
-//   Boxes,
-// } from 'lucide-react';
-
-// function Sidebar() {
-//   return (
-//     <div className="min-h-screen w-64 bg-white border-r p-4 flex flex-col justify-between ">
-//       {/* Top Section */}
-//       <div>
-//         <h2 className="text-2xl font-bold text-green-700 flex items-center gap-2 mb-8">
-//           <span>🌱</span> PlantCareHub
-//         </h2>
-
-//         <nav className="space-y-2 text-sm text-gray-700">
-//           <MenuItem icon={<Home size={18} />} label="Dashboard" active />
-//           <MenuItem icon={<Users size={18} />} label="Users Management" />
-//           <MenuItem icon={<Calendar size={18} />} label="Service Bookings" />
-//           <MenuItem icon={<Database size={18} />} label="Plant Database" />
-//           <MenuItem icon={<UserCheck size={18} />} label="Service Providers" />
-//           <MenuItem icon={<Clock size={18} />} label="Reports & Analytics" />
-//           <MenuItem icon={<Settings size={18} />} label="Settings" />
-
-//           <div className="mt-6 space-y-2">
-//             <MenuItem
-//               icon={<BadgeCheck size={18} />}
-//               label="Provider Requests"
-//               highlight
-//             />
-//             <MenuItem
-//               icon={<Boxes size={18} />}
-//               label="Plan Management"
-//               highlightLight
-//             />
-//           </div>
-//         </nav>
-//       </div>
-
-//       {/* Bottom Section */}
-//       <div className="flex items-center gap-3 border-t pt-4">
-//         <img
-//           src="https://randomuser.me/api/portraits/men/32.jpg"
-//           alt="User"
-//           className="w-10 h-10 rounded-full object-cover"
-//         />
-//         <div>
-//           <p className="text-sm font-medium">John Smith</p>
-//           <p className="text-xs text-gray-500">Admin</p>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// }
-
-// const MenuItem = ({ icon, label, active, highlight, highlightLight }) => {
-//   let base =
-//     'flex items-center gap-3 px-3 py-2 rounded text-sm cursor-pointer transition';
-//   let activeStyle = active
-//     ? 'bg-green-700 text-white font-medium'
-//     : 'hover:bg-gray-100';
-//   let highlightStyle = highlight
-//     ? 'bg-green-100 text-green-800 font-medium'
-//     : highlightLight
-//     ? 'bg-green-50 text-green-800'
-//     : '';
-
-//   return (
-//     <div className={`${base} ${activeStyle} ${highlightStyle}`}>
-//       {icon}
-//       {label}
-//     </div>
-//   );
-// };
-
-// export default Sidebar;
-
-// import React from 'react';
-// import {
-//   Home,
-//   Users,
-//   Calendar,
-//   Database,
-//   UserCheck,
-//   Clock,
-//   Settings,
-//   BadgeCheck,
-//   Boxes,
-// } from 'lucide-react';
-
-// function Sidebar() {
-//   return (
-//     <div className="fixed top-0 left-0 min-h-screen w-64 bg-white  p-4 flex flex-col justify-between shadow-md">
-//       {/* Top Section */}
-//       <div>
-//         <h2 className="text-2xl font-bold text-green-700 flex items-center gap-2 mb-8">
-//           🌱 PlantCareHub
-//         </h2>
-
-//         <nav className="space-y-2 text-sm text-gray-700">
-//           <MenuItem icon={<Home size={18} />} label="Dashboard" active />
-//           <MenuItem icon={<Users size={18} />} label="Users Management" />
-//           <MenuItem icon={<Calendar size={18} />} label="Service Bookings" />
-//           <MenuItem icon={<Database size={18} />} label="Plant Database" />
-//           <MenuItem icon={<UserCheck size={18} />} label="Service Providers" />
-//           <MenuItem icon={<Clock size={18} />} label="Reports & Analytics" />
-//           <MenuItem icon={<Settings size={18} />} label="Settings" />
-
-//           <div className="mt-6 space-y-2">
-//             <MenuItem
-//               icon={<BadgeCheck size={18} />}
-//               label="Provider Requests"
-//               highlight
-//             />
-//             <MenuItem
-//               icon={<Boxes size={18} />}
-//               label="Plan Management"
-//               highlightLight
-//             />
-//           </div>
-//         </nav>
-//       </div>
-
-//       {/* Bottom Section */}
-//       <div className="flex items-center gap-3 pt-4">
-//         <img
-//           src="https://randomuser.me/api/portraits/men/32.jpg"
-//           alt="User"
-//           className="w-10 h-10 rounded-full object-cover"
-//         />
-//         <div>
-//           <p className="text-sm font-medium">John Smith</p>
-//           <p className="text-xs text-gray-500">Admin</p>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// }
-
-// const MenuItem = ({ icon, label, active, highlight, highlightLight }) => {
-//   let base =
-//     'flex items-center gap-3 px-3 py-2 rounded text-sm cursor-pointer transition';
-//   let activeStyle = active
-//     ? 'bg-green-700 text-white font-medium'
-//     : 'hover:bg-gray-100';
-//   let highlightStyle = highlight
-//     ? 'bg-green-100 text-green-800 font-medium'
-//     : highlightLight
-//     ? 'bg-green-50 text-green-800'
-//     : '';
-
-//   return (
-//     <div className={`${base} ${activeStyle} ${highlightStyle}`}>
-//       {icon}
-//       {label}
-//     </div>
-//   );
-// };
-
-// export default Sidebar;
-
 import React, { useState } from "react";
 import {
   Home,
@@ -190,18 +21,12 @@ function Sidebar() {
   const [isOpen, setIsOpen] = useState(false);
   const [activeItem, setActiveItem] = useState("Dashboard");
   const [showConfirmLogout, setShowConfirmLogout] = useState(false);
+
   const navigate = useNavigate();
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    setTimeout(() => {
-      toast.success("Admin Logout Successfully");
-      navigate("/login");
-    }, 200);
-  };
   return (
     <>
       {/* Mobile menu button */}
@@ -215,7 +40,7 @@ function Sidebar() {
       {/* Overlay for mobile */}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
+          className="fixed inset-0  bg-opacity-50 z-40 md:hidden"
           onClick={toggleSidebar}
         ></div>
       )}
@@ -265,7 +90,7 @@ function Sidebar() {
             />
             <MenuItem
               icon={<Calendar size={18} />}
-              label="Service Bookings"
+              label="Assign Bookings"
               active={activeItem === "Service Bookings"}
               onClick={() => {
                 setActiveItem("Service Bookings");
@@ -330,22 +155,6 @@ function Sidebar() {
             </div>
           </nav>
         </div>
-
-        {/* Bottom Section */}
-        {/* <div className="flex items-center gap-3 pt-4 pb-4">
-          <div className="relative">
-            <img
-              src="https://randomuser.me/api/portraits/men/32.jpg"
-              alt="User"
-              className="w-10 h-10 rounded-full object-cover border-2 border-green-500"
-            />
-            <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></div>
-          </div>
-          <div>
-            <p className="text-sm font-medium">John Smith</p>
-            <p className="text-xs text-gray-500">Admin</p>
-          </div>
-        </div> */}
         {/* Bottom Section */}
         <div className="flex items-center justify-between pt-4 pb-4 px-4">
           <div className="flex items-center gap-3">
@@ -368,13 +177,6 @@ function Sidebar() {
             </div>
           </div>
 
-          {/* <button
-            onClick={handleLogout}
-            className="p-2 rounded-full bg-green-600 text-white hover:bg-green-700"
-            title="Logout"
-          >
-            <LogOut className="w-5 h-5" />
-          </button> */}
           <button
             onClick={() => setShowConfirmLogout(true)}
             className="p-2 rounded-full bg-green-600 text-white hover:bg-green-700"
@@ -385,32 +187,35 @@ function Sidebar() {
         </div>
       </div>
       {showConfirmLogout && (
-  <div className="fixed inset-0  bg-opacity-50 z-50 flex items-center justify-center">
-    <div className="bg-white p-6 rounded-lg shadow-lg w-80">
-      <h2 className="text-lg font-semibold mb-4 text-gray-800">Confirm Logout</h2>
-      <p className="text-sm text-gray-600 mb-6">Are you sure you want to logout?</p>
-      <div className="flex justify-end gap-4">
-        <button
-          onClick={() => setShowConfirmLogout(false)}
-          className="px-4 py-2 text-sm bg-gray-200 hover:bg-gray-300 rounded"
-        >
-          Cancel
-        </button>
-        <button
-          onClick={() => {
-            localStorage.removeItem("token");
-            toast.success("Admin Logged Out Successfully");
-            navigate("/login");
-          }}
-          className="px-4 py-2 text-sm bg-red-600 text-white hover:bg-red-700 rounded"
-        >
-          Logout
-        </button>
-      </div>
-    </div>
-  </div>
-)}
-
+        <div className="fixed inset-0  bg-opacity-50 z-50 flex items-center justify-center">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-80">
+            <h2 className="text-lg font-semibold mb-4 text-gray-800">
+              Confirm Logout
+            </h2>
+            <p className="text-sm text-gray-600 mb-6">
+              Are you sure you want to logout?
+            </p>
+            <div className="flex justify-end gap-4">
+              <button
+                onClick={() => setShowConfirmLogout(false)}
+                className="px-4 py-2 text-sm bg-gray-200 hover:bg-gray-300 rounded"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  localStorage.removeItem("token");
+                  toast.success("Admin Logged Out Successfully");
+                  navigate("/login");
+                }}
+                className="px-4 py-2 text-sm bg-red-600 text-white hover:bg-red-700 rounded"
+              >
+                Logout
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }
@@ -425,9 +230,6 @@ const MenuItem = ({
 }) => {
   let base =
     "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm cursor-pointer transition-all duration-200";
-  //   let activeStyle = active
-  //     ? 'bg-green-700 text-white font-medium shadow-sm'
-  //     : 'hover:bg-green-50 text-gray-700';
   let activeStyle = active
     ? highlight
       ? "bg-red-700 text-white font-medium shadow-sm"
@@ -437,9 +239,7 @@ const MenuItem = ({
     : "hover:bg-green-50 text-gray-700";
   let highlightStyle = highlight
     ? "bg-white-500 text-red-700 border-l-4 border-red-500 "
-    : // ? 'bg-red-500 text-white font-medium shadow-sm'
-
-    highlightLight
+    : highlightLight
     ? "bg-green-50 text-green-800 border-l-4 border-green-500 "
     : "";
 

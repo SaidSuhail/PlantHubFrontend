@@ -9,6 +9,7 @@ import {
 } from "../Features/adminSlice";
 import { toast } from "sonner";
 import ConfirmDeleteModal from "../Components/ConfirmDeleteModal";
+import { SparkleIcon } from "lucide-react";
 function PlanManagement() {
   const dispatch = useDispatch();
   const [showAddModal, setShowAddModal] = useState(false);
@@ -104,11 +105,9 @@ function PlanManagement() {
   if (loadingPlans) return <div>Loading...</div>;
   if (plansError) return <div>Error Loading...{plansError}</div>;
 
-  // Filter only active subscriptions
   const activePlans = allUserPlans.filter((plan) => plan.isActive);
   const totalActivePlans = activePlans.length;
 
-  // Find the most popular plan based on plan name frequency
   const planFrequency = {};
   allUserPlans.forEach((plan) => {
     const name = plan.plan?.planName;
@@ -119,12 +118,10 @@ function PlanManagement() {
   const mostPopularPlan =
     Object.entries(planFrequency).sort((a, b) => b[1] - a[1])[0]?.[0] || "N/A";
 
-  // Calculate total revenue (summing all plan prices regardless of active/inactive)
   const totalRevenue = allUserPlans.reduce((sum, plan) => {
     return sum + (plan.plan?.price || 0);
   }, 0);
 
-  // Construct the stats array
   const stats = [
     {
       label: "Total Active Plans",
@@ -149,44 +146,38 @@ function PlanManagement() {
     },
     {
       label: "Plan Conversion Rate",
-      value: "100%", // Since all users must subscribe
-      change: "+0%", // Optional: Based on past values
+      value: "100%",
+      change: "+0%",
       changeColor: "text-green-600",
     },
   ];
 
   return (
-    <div className="p-4 sm:p-6 md:p-8">
+    <div className="p-4 sm:p-6 md:p-8 bg-gradient-to-br from-emerald-50 to-white rounded-3xl">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
-        <h1 className="text-2xl font-semibold">Plan Management</h1>
-        {/* <div className="flex gap-2">
-          <input
-            type="text"
-            placeholder="Search plans..."
-            className="border px-4 py-2 rounded-md w-full sm:w-64"
-          />
-          <button className="border px-4 py-2 rounded-md">Filter</button>
-        </div> */}
+        <h1 className="text-3xl text-emerald-700  font-bold">
+          Plan Management
+        </h1>
       </div>
 
       <div className="flex justify-end mb-6">
         <button
-          className="bg-green-700 text-white px-4 py-2 rounded hover:bg-green-800"
+          className="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-5 py-2.5 rounded-xl shadow-md transition duration-200 ease-in-out hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2"
           onClick={() => setShowAddModal(true)}
         >
           Create New Plan
         </button>
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
         {stats.map((stat, i) => (
           <div
             key={i}
-            className="bg-white p-4 shadow rounded border text-center"
+            className="bg-white p-5 rounded-2xl shadow-md hover:shadow-lg transition-shadow border border-gray-100"
           >
-            <p className="text-sm text-gray-500">{stat.label}</p>
-            <p className="text-xl font-bold">{stat.value}</p>
-            <p className={`text-xs ${stat.changeColor}`}>{stat.change}</p>
+            <p className="text-sm text-gray-500 mb-1">{stat.label}</p>
+            <p className="text-xl font-extrabold text-gray-800">{stat.value}</p>
+            <p className={`text-sm mt-1 ${stat.changeColor}`}>{stat.change}</p>
           </div>
         ))}
       </div>
@@ -205,56 +196,79 @@ function PlanManagement() {
               <th className="p-4 text-center">Actions</th>
             </tr>
           </thead>
-          <tbody>
+
+          <tbody className="text-sm text-gray-700">
             {plans.map((plan, index) => (
               <tr
                 key={index}
-                className="border-b hover:bg-gray-50 transition duration-200"
+                className="group border-b hover:bg-emerald-50 transition duration-200"
               >
-                <td className="p-4 font-medium flex items-center gap-2">
-                  <span className="text-green-500 text-lg">🪴</span>{" "}
-                  {plan.planName}
+                <td className="px-4 py-3 font-semibold whitespace-nowrap">
+                  <div className="flex items-center gap-2">
+                    {/* <span className="text-green-500 text-xl">🪴</span> */}
+                    <SparkleIcon className="text-green-500 w-5 h-5" />
+                    <span className="text-gray-800 font-medium">
+                      {plan.planName}
+                    </span>
+                  </div>
                 </td>
-                <td className="p-4 font-semibold">₹{plan.price}</td>
-                <td className="p-4">{plan.minPlantsAllowed}</td>
-                <td className="p-4">{plan.maxPlantsAllowed}</td>
-                <td className="p-4">{plan.weeklyServices}</td>
-                <td className="p-4">{plan.monthlyReplacements}</td>
-                <td className="p-4">{plan.description}</td>
-                <td className="p-4 flex items-center justify-center gap-2">
-                  <button
-                    className="p-2 text-blue-600 hover:bg-blue-50 rounded-md transition-colors"
-                    title="Edit"
-                    onClick={() => handleEdit(plan.id)}
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-5 w-5"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                    >
-                      <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
-                    </svg>
-                  </button>
 
-                  <button
-                    className="p-2 text-red-600 hover:bg-red-50 rounded-md transition-colors"
-                    title="Delete"
-                    onClick={() => handleDelete(plan.id)}
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-5 w-5"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
+                <td className="px-4 py-3 font-semibold text-emerald-600">
+                  ₹{plan.price}
+                </td>
+                <td className="px-4 py-3 text-center">
+                  {plan.minPlantsAllowed}
+                </td>
+                <td className="px-4 py-3 text-center">
+                  {plan.maxPlantsAllowed}
+                </td>
+                <td className="px-4 py-3 text-center">{plan.weeklyServices}</td>
+                <td className="px-4 py-3 text-center">
+                  {plan.monthlyReplacements}
+                </td>
+
+                <td className="px-4 py-3 max-w-xs text-gray-500 truncate">
+                  {plan.description}
+                </td>
+
+                <td className="px-4 py-3 text-center">
+                  <div className="flex justify-center gap-2">
+                    {/* Edit Button */}
+                    <button
+                      onClick={() => handleEdit(plan.id)}
+                      title="Edit"
+                      className="p-2 rounded-md text-blue-600 hover:bg-blue-100 transition-colors"
                     >
-                      <path
-                        fillRule="evenodd"
-                        d="M9 2a1 1 0 00-1 1v1H5.5a1 1 0 100 2h.328l.437 9.191A2 2 0 008.26 17h3.48a2 2 0 001.996-1.809l.437-9.191H15a1 1 0 100-2H12V3a1 1 0 00-1-1H9zm2 5a1 1 0 10-2 0v7a1 1 0 102 0V7z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                  </button>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-5 w-5"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                      >
+                        <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+                      </svg>
+                    </button>
+
+                    {/* Delete Button */}
+                    <button
+                      onClick={() => handleDelete(plan.id)}
+                      title="Delete"
+                      className="p-2 rounded-md text-red-600 hover:bg-red-100 transition-colors"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-5 w-5"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M9 2a1 1 0 00-1 1v1H5.5a1 1 0 100 2h.328l.437 9.191A2 2 0 008.26 17h3.48a2 2 0 001.996-1.809l.437-9.191H15a1 1 0 100-2H12V3a1 1 0 00-1-1H9zm2 5a1 1 0 10-2 0v7a1 1 0 102 0V7z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                    </button>
+                  </div>
                 </td>
               </tr>
             ))}
@@ -263,13 +277,13 @@ function PlanManagement() {
       </div>
 
       {showAddModal && (
-        <div className="fixed inset-0  bg-opacity-30 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg shadow p-6 w-full max-w-lg">
-            <h2 className="text-lg font-semibold mb-4">
+        <div className="fixed inset-0 bg-opacity-10 backdrop-blur-sm flex items-center justify-center z-50 transition-opacity duration-300">
+          <div className="bg-white rounded-2xl shadow-lg w-full max-w-lg p-6 animate-fadeInUp">
+            <h2 className="text-xl font-semibold text-emerald-700 mb-6">
               {modalMode === "add" ? "Add New Plan" : "Edit Plan"}
             </h2>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {Object.keys(formData)
                 .filter((key) => key !== "id")
                 .map((key) => (
@@ -282,21 +296,21 @@ function PlanManagement() {
                     onChange={(e) =>
                       setFormData({ ...formData, [key]: e.target.value })
                     }
-                    className="border p-2 rounded"
+                    className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 placeholder-gray-400"
                   />
                 ))}
             </div>
 
-            <div className="flex justify-end gap-3 mt-4">
+            <div className="flex justify-end mt-6 gap-3 space-x-3">
               <button
                 onClick={() => setShowAddModal(false)}
-                className="px-4 py-2 border rounded"
+                className="px-4 py-2 text-sm rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100 transition"
               >
                 Cancel
               </button>
               <button
                 onClick={handleSubmit}
-                className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+                className="px-5 py-2 text-sm rounded-lg bg-emerald-600 text-white hover:bg-emerald-700 transition shadow"
               >
                 {modalMode === "add" ? "Add" : "Update"}
               </button>

@@ -10,6 +10,46 @@ export const fetchPlants = createAsyncThunk("admin/fetchPlants", async () => {
   const response = await axiosInstance.get("/Plant/GetAllPlants");
   return response.data.data;
 });
+export const deletePlant = createAsyncThunk(
+  "admin/deletePlant",
+  async (id, { rejectWithValue }) => {
+    try {
+      await axiosInstance.delete(`/Plant/${id}`);
+      return id; // return plant id to remove from Redux state
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to delete plant"
+      );
+    }
+  }
+);
+
+export const patchUpdatePlant = createAsyncThunk(
+  "admin/patchUpdatePlant",
+  async ({ id, patchData }, { rejectWithValue }) => {
+    try {
+      const formData = new FormData();
+
+      for (const key in patchData) {
+        if (patchData[key] !== null && patchData[key] !== "") {
+          formData.append(key, patchData[key]);
+        }
+      }
+
+      const response = await axiosInstance.patch(`/Plant/${id}`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      return response.data.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to update plant"
+      );
+    }
+  }
+);
 
 export const SearchPlant = createAsyncThunk(
   "admin/searchplant",
@@ -136,17 +176,6 @@ export const changeUserRole = createAsyncThunk(
   }
 );
 
-// export const fetchAllUserPlans = createAsyncThunk(
-//   "admin/fetchAllUserPlans",
-//   async (_, { rejectWithValue }) => {
-//     try {
-//       const response = await axiosInstance.get("/UserPlan"); // Get all user plans
-//       return response.data; // This should be an array of user plan objects
-//     } catch (error) {
-//       return rejectWithValue("Failed to fetch all user plans");
-//     }
-//   }
-// );
 export const fetchAllUserPlans = createAsyncThunk(
   "admin/fetchAllUserPlans",
   async (_, { rejectWithValue }) => {
@@ -177,7 +206,7 @@ export const fetchPendingBookings = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.get("/Booking/pending");
-      console.log("Pnedingbookingss",response.data)
+      console.log("Pnedingbookingss", response.data);
       return response.data.data; // Assuming your API wraps data under .data
     } catch (error) {
       return rejectWithValue(
@@ -187,55 +216,6 @@ export const fetchPendingBookings = createAsyncThunk(
   }
 );
 
-// export const assignProviderToBooking = createAsyncThunk(
-//   "admin/assignProviderToBooking",
-//   async ({ bookingId, providerId }, { rejectWithValue }) => {
-//     try {
-//         console.log(" Sending assignment payload:", { bookingId, providerId });
-
-//       const payload = {
-//         bookingId,
-//         providerId,
-//       };
-//             console.log("✅ Assign-provider API response:",payload);
-//       const response = await axiosInstance.post(
-//         "/Booking/Assign-provider",
-//         payload
-//       );
-//       return response.data.data; // Assuming .data contains updated booking
-//     } catch (error) {
-//       return rejectWithValue(
-//         error.response?.data?.message || "Failed to assign provider"
-//       );
-//     }
-//   }
-// );
-
-// export const assignProviderToBooking = createAsyncThunk(
-//   "admin/assignProviderToBooking",
-//   async ({ bookingId, providerId }, { rejectWithValue }) => {
-//     try {
-//       console.log("🚀 Sending assignment payload:", { bookingId, providerId });
-
-//       const payload = { bookingId, providerId };
-//       const response = await axiosInstance.post("/Booking/Assign-provider", payload);
-
-//       console.log("✅ Assign-provider API response:", response.data);
-
-//       // ✅ Don't fail if data is null — just return bookingId and providerId
-//       return {
-//         bookingId,
-//         providerId,
-//         message: response.data.message || "Assigned successfully",
-//       };
-//     } catch (error) {
-//       console.error("❌ assignProviderToBooking error:", error);
-//       return rejectWithValue(
-//         error.response?.data?.message || error.message || "Failed to assign provider"
-//       );
-//     }
-//   }
-// );
 export const assignProviderToBooking = createAsyncThunk(
   "admin/assignProviderToBooking",
   async ({ bookingId, providerId }, { rejectWithValue }) => {
@@ -256,7 +236,9 @@ export const assignProviderToBooking = createAsyncThunk(
     } catch (error) {
       console.error("❌ assignProviderToBooking error:", error);
       return rejectWithValue(
-        error.response?.data?.message || error.message || "Failed to assign provider"
+        error.response?.data?.message ||
+          error.message ||
+          "Failed to assign provider"
       );
     }
   }
@@ -321,8 +303,8 @@ const adminSlice = createSlice({
     assignProviderStatus: null,
     assignProviderError: null,
     providers: [],
-loadingProviders: false,
-errorProviders: null,
+    loadingProviders: false,
+    errorProviders: null,
   },
   reducers: {
     resetAddPlantStatus: (state) => {
@@ -448,20 +430,9 @@ errorProviders: null,
       .addCase(deletePlan.rejected, (state, action) => {
         state.error = action.payload || "Delete failed";
       })
-      //   .addCase(fetchAllUserPlans.pending, (state) => {
-      //   state.userPlansLoading = true;
-      // })
-      // .addCase(fetchAllUserPlans.fulfilled, (state, action) => {
-      //   state.userPlansLoading = false;
-      //   state.allUserPlans = action.payload;
-      // })
-      // .addCase(fetchAllUserPlans.rejected, (state, action) => {
-      //   state.userPlansLoading = false;
-      //   state.userPlansError = action.payload;
-      // });
       .addCase(fetchAllUserPlans.pending, (state) => {
         state.userPlansLoading = true;
-        state.userPlansError = null; // Clear previous errors if any
+        state.userPlansError = null;
       })
       .addCase(fetchAllUserPlans.fulfilled, (state, action) => {
         state.userPlansLoading = false;
@@ -511,31 +482,49 @@ errorProviders: null,
         state.assignProviderStatus = "loading";
         state.assignProviderError = null;
       })
-     
+
       .addCase(assignProviderToBooking.fulfilled, (state, action) => {
-      const { bookingId, providerId } = action.payload;
-      const booking = state.pendingBookings.find(b => b.id === bookingId);
-      if (booking) {
-        booking.providerId = providerId;
-        booking.bookingStatus = "Assigned";
-      }
-    })
+        const { bookingId, providerId } = action.payload;
+        const booking = state.pendingBookings.find((b) => b.id === bookingId);
+        if (booking) {
+          booking.providerId = providerId;
+          booking.bookingStatus = "Assigned";
+        }
+      })
       .addCase(assignProviderToBooking.rejected, (state, action) => {
         state.assignProviderStatus = "failed";
         state.assignProviderError = action.payload;
       })
       .addCase(fetchAllProviders.pending, (state) => {
-  state.loadingProviders = true;
-  state.errorProviders = null;
-})
-.addCase(fetchAllProviders.fulfilled, (state, action) => {
-  state.loadingProviders = false;
-  state.providers = action.payload;
-})
-.addCase(fetchAllProviders.rejected, (state, action) => {
-  state.loadingProviders = false;
-  state.errorProviders = action.payload;
-})
+        state.loadingProviders = true;
+        state.errorProviders = null;
+      })
+      .addCase(fetchAllProviders.fulfilled, (state, action) => {
+        state.loadingProviders = false;
+        state.providers = action.payload;
+      })
+      .addCase(fetchAllProviders.rejected, (state, action) => {
+        state.loadingProviders = false;
+        state.errorProviders = action.payload;
+      })
+      .addCase(deletePlant.fulfilled, (state, action) => {
+        state.plants = state.plants.filter(
+          (plant) => plant.id !== action.payload
+        );
+      })
+      .addCase(deletePlant.rejected, (state, action) => {
+        state.errorPlants = action.payload;
+      })
+      .addCase(patchUpdatePlant.fulfilled, (state, action) => {
+        const updatedPlant = action.payload;
+        const index = state.plants.findIndex((p) => p.id === updatedPlant.id);
+        if (index !== -1) {
+          state.plants[index] = updatedPlant;
+        }
+      })
+      .addCase(patchUpdatePlant.rejected, (state, action) => {
+        state.errorPlants = action.payload || "Failed to update plant";
+      });
   },
 });
 export const { resetAddPlantStatus } = adminSlice.actions;

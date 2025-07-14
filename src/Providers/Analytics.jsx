@@ -26,10 +26,10 @@ function Analytics() {
   ];
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen ml-34 rounded-4xl">
+    <div className="p-6 bg-gradient-to-br from-emerald-50 to-white  min-h-screen lg:ml-48 rounded-4xl">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">Analytics Dashboard</h1>
+        <h1 className="text-3xl font-bold text-emerald-700">Analytics Dashboard</h1>
       </div>
 
       {/* Key Metrics */}
@@ -67,7 +67,7 @@ function Analytics() {
         <div className="bg-white rounded-xl shadow-sm p-6">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-lg font-semibold text-gray-900">Plant Care Services Trend</h2>
-            <div className="flex items-center text-sm text-blue-600 font-medium">
+            <div className="flex items-center text-sm text-emerald-600 font-medium">
               <span>services</span>
               <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -80,7 +80,7 @@ function Analytics() {
             {[65, 80, 75, 90, 110, 140].map((height, index) => (
               <div key={index} className="flex flex-col items-center flex-1 px-1">
                 <div 
-                  className="w-full bg-blue-500 rounded-t-md hover:bg-blue-600 transition-colors duration-200"
+                  className="w-full bg-emerald-500 rounded-t-md hover:bg-emerald-400 transition-colors duration-200"
                   style={{ height: `${height}px` }}
                 ></div>
                 <span className="mt-2 text-xs text-gray-500">{['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'][index]}</span>

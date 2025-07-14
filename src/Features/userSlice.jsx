@@ -334,66 +334,21 @@ export const createPlantBooking = createAsyncThunk(
   }
 );
 
-// export const fetchNotifications = createAsyncThunk(
-//   "user/fetchNotifications",
-//   async () => {
-//     const response = await axiosInstance.get("/notifications");
-//     return response.data.data; // Adjust if your API response structure differs
-//   }
-// );
-
-// export const fetchNotifications = createAsyncThunk(
-//   "user/fetchNotifications",
-//   async (userId, { rejectWithValue }) => {
-//     try {
-//       const response = await axiosInstance.get(`/Notification/user?userId=${userId}`);
-//       return response.data.data; // adjust if your backend wraps it
-//     } catch (err) {
-//       return rejectWithValue(
-//         err.response?.data?.message || "Failed to fetch notifications"
-//       );
-//     }
-//   }
-// );
-
-// export const markNotificationAsRead = createAsyncThunk(
-//   "user/markNotificationAsRead",
-//   async (id, { rejectWithValue }) => {
-//     try {
-//       const response = await axiosInstance.post(`/Notification/${id}/read`);
-//       return id; // return ID so we can update it locally
-//     } catch (error) {
-//       return rejectWithValue(error.response?.data?.message || "Failed to mark as read");
-//     }
-//   }
-// );
-
-// export const fetchNotifications = createAsyncThunk(
-//   "user/fetchNotifications",
-//   async (userId, thunkAPI) => {
-//     try {
-//             console.log("📨 Fetching notifications for userId:", userId);
-//       const response = await axiosInstance.get(`/Notification/user?userId=${userId}`);
-//            console.log("✅ Notifications API response:", response.data.data);
-//       return response.data.data;
-//     } catch (error) {
-//             console.error("❌ Error fetching notifications:", error.response?.data || error.message);
-
-//       return thunkAPI.rejectWithValue("Failed to fetch notifications");
-//     }
-//   }
-// );
-// userSlice.jsx or userSlice.js
 export const fetchNotifications = createAsyncThunk(
   "user/fetchNotifications",
   async (userId, thunkAPI) => {
     try {
       console.log("📨 Fetching notifications for userId:", userId);
-      const response = await axiosInstance.get(`/Notification/user?userId=${userId}`);
+      const response = await axiosInstance.get(
+        `/Notification/user?userId=${userId}`
+      );
       console.log("✅ Notifications API response:", response.data);
       return response.data; // Assuming backend returns plain list, not { data: [] }
     } catch (error) {
-      console.error("❌ Error fetching notifications:", error.response?.data || error.message);
+      console.error(
+        "❌ Error fetching notifications:",
+        error.response?.data || error.message
+      );
       return thunkAPI.rejectWithValue("Failed to fetch notifications");
     }
   }
@@ -470,8 +425,8 @@ const userSlice = createSlice({
     notifications: [],
     loadingNotifications: false,
     errorNotifications: null,
-  markingNotification: false,
-  errorMarkingNotification: null,
+    markingNotification: false,
+    errorMarkingNotification: null,
   },
   reducers: {
     clearCartMessages: (state) => {
@@ -614,7 +569,6 @@ const userSlice = createSlice({
           typeof action.payload === "string"
             ? action.payload
             : action.payload?.message || "Failed To Add To Cart";
-        // state.fetchingCartError = action.payload||"Failed to remove item";
       })
       .addCase(increaseCartQuantity.fulfilled, (state, action) => {
         state.cartItems = action.payload.items;
@@ -775,7 +729,6 @@ const userSlice = createSlice({
       })
       .addCase(createServiceBooking.fulfilled, (state, action) => {
         state.createServiceBookingStatus = "succeeded";
-        // optionally push booking to state.userBookings.push(action.payload)
       })
       .addCase(createServiceBooking.rejected, (state, action) => {
         state.createServiceBookingStatus = "failed";
@@ -790,28 +743,22 @@ const userSlice = createSlice({
         state.createBookingError = null;
         state.cartItems = [];
         state.cartTotal = 0;
-        // You may optionally store booking data
-        // state.latestBooking = action.payload;
       })
       .addCase(createPlantBooking.rejected, (state, action) => {
         state.createBookingStatus = "failed";
         state.createBookingError = action.payload;
       })
-        .addCase(fetchNotifications.pending, (state) => {
+      .addCase(fetchNotifications.pending, (state) => {
         state.loadingNotifications = true;
         state.errorNotifications = null;
       })
-      // .addCase(fetchNotifications.fulfilled, (state, action) => {
-      //         console.log("🔁 Payload received:", action.payload); // ✅ Debug log
-      //   state.loadingNotifications = false;
-      //   state.notifications = action.payload;
-      // })
+
       .addCase(fetchNotifications.fulfilled, (state, action) => {
-  console.log("✅ Updating state.notifications with:", action.payload);
-  state.loadingNotifications = false;
-  state.notifications = action.payload;
-  console.log("📦 Updated state.notifications:", state.notifications); // <-- confirm here
-})
+        console.log("✅ Updating state.notifications with:", action.payload);
+        state.loadingNotifications = false;
+        state.notifications = action.payload;
+        console.log("📦 Updated state.notifications:", state.notifications);
+      })
       .addCase(fetchNotifications.rejected, (state, action) => {
         state.loadingNotifications = false;
         state.errorNotifications = action.error.message;
@@ -820,22 +767,18 @@ const userSlice = createSlice({
         state.markingNotification = true;
         state.errorMarkingNotification = null;
       })
-      // .addCase(markNotificationAsRead.fulfilled, (state, action) => {
-      //   state.markingNotification = false;
-      //   const notif = state.notifications.find(n => n.id === action.payload);
-      //   if (notif) notif.read = true;
-      // })
+
       .addCase(markNotificationAsRead.fulfilled, (state, action) => {
-  state.markingNotification = false;
-  const notif = state.notifications.find(n => n.id === action.payload);
-  if (notif) notif.isRead = true; // ✅ correct property name
-})
+        state.markingNotification = false;
+        const notif = state.notifications.find((n) => n.id === action.payload);
+        if (notif) notif.isRead = true;
+      })
 
       .addCase(markNotificationAsRead.rejected, (state, action) => {
         state.markingNotification = false;
         state.errorMarkingNotification = action.payload;
       });
-      },
+  },
 });
 export const { clearCartMessages, clearSubscribeMessages, setUserFromToken } =
   userSlice.actions;

@@ -8,6 +8,8 @@ import {
   fetchPendingBookings,
 } from "../Features/adminSlice";
 import { useDispatch, useSelector } from "react-redux";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 const ServiceBooking = () => {
   const [bookings, setBookings] = useState([]);
@@ -18,20 +20,21 @@ const ServiceBooking = () => {
   const [serviceFilter, setServiceFilter] = useState("All");
   const [currentPage, setCurrentPage] = useState(1);
   const bookingsPerPage = 5;
+  const [bookingTypeFilter, setBookingTypeFilter] = useState("All");
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
 
   const dispatch = useDispatch();
 
   useEffect(() => {
-dispatch(fetchAllProviders());
+    dispatch(fetchAllProviders());
     dispatch(fetchPendingBookings());
   }, [dispatch]);
 
   const { pendingBookings, loadingPendingBookings } = useSelector(
     (state) => state.admin
   );
-  // const allUsers = useSelector((state) => state.users.users); // 👈 fix here
 
-  // const providers = allUsers.filter((u) => u.role === "Provider");
   const { providers, loadingProviders } = useSelector((state) => state.admin);
 
   console.log("ededededed", providers);
@@ -40,115 +43,106 @@ dispatch(fetchAllProviders());
     "🧠 Full Redux state from Notification.jsx in Bokiiiiiiiiiiiiingsss:",
     fullState
   );
-  // const confirmAssignProvider = (bookingId) => {
-  //   const providerId = assignProvider[bookingId];
-  //   if (providerId) {
-  //     dispatch(assignProviderToBooking({ bookingId, providerId }))
-  //       .unwrap()
-  //       .then(() => setAssignProvider((prev) => ({ ...prev, [bookingId]: "" })))
-  //       .catch((err) => alert(err));
-  //   }
-  // };
+
   const confirmAssignProvider = (bookingId) => {
-  // const providerId = assignProvider[bookingId];
-  const providerId = parseInt(assignProvider[bookingId]);
+    // const providerId = assignProvider[bookingId];
+    const providerId = parseInt(assignProvider[bookingId]);
     console.log("Parsed provider ID:", providerId);
 
-if (isNaN(providerId)) {
-  alert("Invalid provider ID selected.");
-  return;
-}
+    if (isNaN(providerId)) {
+      alert("Invalid provider ID selected.");
+      return;
+    }
 
-  if (!providerId) {
-    alert("Please select a provider before confirming.");
-    return;
-  }
+    if (!providerId) {
+      alert("Please select a provider before confirming.");
+      return;
+    }
 
-  // const provider = providers.find(p => p.id === parseInt(providerId));
-  // if (!provider) {
-  //   alert("Invalid provider selected.");
-  //   return;
-  // }
-// const provider = providers.find((p) =>{
-//       console.log("Checking provider:", p); // ✅ Log each provider
+    const provider = providers.find((p) => {
+      console.log("Checking provider:", p);
+      return p.id === providerId; // <-- ✅ RETURN statement added
+    });
 
-//    p.id === providerId});
-const provider = providers.find((p) => {
-  console.log("Checking provider:", p);
-  return p.id === providerId; // <-- ✅ RETURN statement added
-});
+    if (!provider) {
+      alert("Selected provider not found in list.");
+      return;
+    }
+    console.log("Dispatching with:", { bookingId, providerId });
 
-if (!provider) {
-  alert("Selected provider not found in list.");
-  return;
-}
-  console.log("Dispatching with:", { bookingId, providerId });
-
-  dispatch(assignProviderToBooking({ bookingId, providerId }))
-    .unwrap()
-    .then(() => setAssignProvider(prev => ({ ...prev, [bookingId]: '' })))
-    .catch((err) => alert("Failed to assign provider: " + err));
-};
-
-
-  useEffect(() => {
-    setBookings(pendingBookings); // Optional local control
-  }, [pendingBookings]);
-
-  // const providers = ['Alice', 'Bob', 'Carol', 'Dave', 'Eve'];
-  const statusOptions = [
-    "All",
-    "Pending",
-    "In Progress",
-    "Completed",
-    "Accepted",
-    "Rejected",
-    "Assigned",
-  ];
+    dispatch(assignProviderToBooking({ bookingId, providerId }))
+      .unwrap()
+      .then(() => setAssignProvider((prev) => ({ ...prev, [bookingId]: "" })))
+      .catch((err) => alert("Failed to assign provider: " + err));
+  };
 
   useEffect(() => {
     setBookings(pendingBookings);
-    // setFilteredBookings(sampleData);
+  }, [pendingBookings]);
+
+  const statusOptions = ["All", "Pending", "Assigned"];
+
+  useEffect(() => {
+    setBookings(pendingBookings);
   }, [pendingBookings]);
 
   useEffect(() => {
     let results = bookings;
 
-    if (statusFilter !== "All") {
-      results = results.filter((b) => b.status === statusFilter);
+    if (statusFilter === "All") {
+      // no need to filter
+    } else if (statusFilter === "Assigned") {
+      results = results.filter((b) => b.providerId !== null);
+    } else if (statusFilter === "Pending") {
+      results = results.filter((b) => b.providerId === null);
     }
 
-    if (serviceFilter !== "All") {
-      results = results.filter((b) => b.service === serviceFilter);
+    if (bookingTypeFilter !== "All") {
+      results = results.filter((b) => b.bookingType === bookingTypeFilter);
+    }
+    if (startDate) {
+      results = results.filter((b) => new Date(b.bookingDate) >= startDate);
+    }
+    if (endDate) {
+      results = results.filter((b) => new Date(b.bookingDate) <= endDate);
     }
 
     if (searchTerm) {
-      results = results.filter(
-        (b) =>
-          b.id.toString().includes(searchTerm) ||
-          b.customer.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          b.service.toLowerCase().includes(searchTerm.toLowerCase())
-      );
+      results = results.filter((b) => {
+        const serviceNames = b.serviceBookingItems
+          ?.map((item) => item.serviceName)
+          .join(", ")
+          .toLowerCase();
+
+        return (
+          b.userName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          serviceNames.includes(searchTerm.toLowerCase()) ||
+          (b.providerName?.toLowerCase() || "").includes(
+            searchTerm.toLowerCase()
+          )
+        );
+      });
     }
+
+    results = [...results].sort(
+      (a, b) => new Date(b.bookingDate) - new Date(a.bookingDate)
+    );
 
     setFilteredBookings(results);
     setCurrentPage(1);
-  }, [searchTerm, statusFilter, serviceFilter, bookings]);
+  }, [
+    searchTerm,
+    statusFilter,
+    serviceFilter,
+    bookings,
+    bookingTypeFilter,
+    startDate,
+    endDate,
+  ]);
 
   const handleSelectProvider = (id, value) => {
     setAssignProvider((prev) => ({ ...prev, [id]: value }));
   };
-
-  // const confirmAssignProvider = (id) => {
-  //   const selectedProvider = assignProvider[id];
-  //   if (selectedProvider) {
-  //     const updated = bookings.map(b =>
-  //       b.id === id ? { ...b, provider: selectedProvider, status: 'Assigned' } : b
-  //     );
-  //     setBookings(updated);
-  //     setAssignProvider(prev => ({ ...prev, [id]: '' }));
-  //   }
-  // };
 
   const indexOfLastBooking = currentPage * bookingsPerPage;
   const indexOfFirstBooking = indexOfLastBooking - bookingsPerPage;
@@ -182,25 +176,30 @@ if (!provider) {
     Assigned: <GiConfirmed className="mr-1" />,
   };
 
-  const serviceOptions = ["All", ...new Set(bookings.map((b) => b.service))];
-
   return (
-    <div className="p-6">
-      <h2 className="text-2xl font-bold mb-6">Service Bookings</h2>
+    <div className="p-6 bg-gradient-to-br from-emerald-50 to-white rounded-3xl">
+      <h2 className="text-2xl  md:text-3xl font-bold mb-6 text-emerald-700">
+        {bookingTypeFilter === "All"
+          ? "All Booking"
+          : bookingTypeFilter === "ServiceBooking"
+          ? "Service Bookings"
+          : "Plant Bookings"}
+      </h2>
 
       {/* Filters */}
-      <div className="flex flex-wrap gap-4 items-center mb-6">
+      <div className="flex flex-wrap gap-4 items-center">
         <input
           type="text"
-          placeholder="Search by ID, customer, or service"
+          placeholder="Search..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="border rounded-md px-4 py-2 w-full sm:w-1/3"
+          className="w-full sm:w-1/3 px-4 py-2 text-sm border  border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 placeholder:text-gray-400"
         />
+
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
-          className="border rounded-md px-4 py-2"
+          className="px-4 py-2 text-sm rounded-md border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white text-gray-700"
         >
           {statusOptions.map((status, idx) => (
             <option key={idx} value={status}>
@@ -208,18 +207,66 @@ if (!provider) {
             </option>
           ))}
         </select>
+
+        {/* Date filter section */}
+
+        <div className="flex flex-wrap gap-4 items-center">
+          <div className="flex items-center gap-2">
+            <label className="text-sm text-gray-600 whitespace-nowrap">
+              From:
+            </label>
+            <DatePicker
+              selected={startDate}
+              onChange={(date) => setStartDate(date)}
+              placeholderText="Start date"
+              className="border bg-white border-gray-300 px-3 py-2 rounded-md text-sm w-[140px] focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              dateFormat="yyyy-MM-dd"
+              isClearable
+            />
+          </div>
+          <div className="flex items-center gap-2">
+            <label className="text-sm text-gray-600 whitespace-nowrap">
+              To:
+            </label>
+            <DatePicker
+              selected={endDate}
+              onChange={(date) => setEndDate(date)}
+              placeholderText="End date"
+              className="border bg-white border-gray-300 px-3 py-2 rounded-md text-sm w-[140px] focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              dateFormat="yyyy-MM-dd"
+              isClearable
+            />
+          </div>
+        </div>
+
         <select
-          value={serviceFilter}
-          onChange={(e) => setServiceFilter(e.target.value)}
-          className="border rounded-md px-4 py-2"
+          value={bookingTypeFilter}
+          onChange={(e) => setBookingTypeFilter(e.target.value)}
+          className="px-4 py-2 border border-gray-300 rounded-lg shadow-sm bg-white text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition duration-150"
         >
-          {serviceOptions.map((service, idx) => (
-            <option key={idx} value={service}>
-              {service}
-            </option>
-          ))}
+          <option value="All">All Types</option>
+          <option value="ServiceBooking">Service Booking</option>
+          <option value="PlantBooking">Plant Booking</option>
         </select>
+
+        <button
+          onClick={() => {
+            setSearchTerm("");
+            setStatusFilter("All");
+            setServiceFilter("All");
+            setStartDate(null);
+            setEndDate(null);
+          }}
+          className="ml-auto bg-gray-100 hover:bg-gray-200 text-sm px-4 py-2 rounded-md text-gray-700 border border-gray-300 transition-colors duration-150"
+        >
+          Clear Filters
+        </button>
       </div>
+      <p className="text-gray-500 text-sm mb-4">
+        Showing {indexOfFirstBooking + 1} to{" "}
+        {Math.min(indexOfLastBooking, filteredBookings.length)} of{" "}
+        {filteredBookings.length} results
+      </p>
 
       {/* Table */}
       <div className="overflow-x-auto">
@@ -228,7 +275,7 @@ if (!provider) {
             <tr>
               <th className="px-4 py-3">Booking ID</th>
               <th className="px-4 py-3">Customer</th>
-              <th className="px-4 py-3">Service</th>
+              <th className="px-4 py-3">Booking Type</th>
               <th className="px-4 py-3">Date & Time</th>
               <th className="px-4 py-3">Assign Provider</th>
               <th className="px-4 py-3">Status</th>
@@ -236,119 +283,69 @@ if (!provider) {
             </tr>
           </thead>
           <tbody>
-            {/* {currentBookings.map((b) => (
+            {currentBookings.map((b, index) => (
               <tr key={b.id} className="border-t hover:bg-gray-50">
-                {/* <td className="px-4 py-3 font-semibold">{b.user.id}</td> */}
-            {/* <td className="px-4 py-3">{b.user.name}</td>
-                <td className="px-4 py-3">{b.serviceName}</td> */}
-            {/* <td className="px-4 py-3">{b.datetime}</td>
-                <td className="px-4 py-3"> */}
-            {/* <div className="flex items-center space-x-2">
-                    <select
-                      value={assignProvider[b.id] || ''}
-                      onChange={(e) => handleSelectProvider(b.id, e.target.value)}
-                      className="border px-2 py-1 rounded-md"
-                    >
-                      <option value="">-- Select --</option>
-                      {providers.map((p) => (
-                        <option key={p.id} value={p.id}>{p.name}</option>
-                      ))}
-                    </select>
-                    <button
-                      onClick={() => confirmAssignProvider(b.id)}
-                      className="bg-blue-500 text-white text-xs px-2 py-1 rounded hover:bg-blue-600"
-                    >
-                      Confirm
-                    </button>
-                  </div> */}
-            {/* {b.provider && <div className="text-xs text-gray-500 mt-1">Assigned to {b.provider}</div>} */}
-            {/* {b.providerId && (
-  <div className="text-xs text-gray-500 mt-1">
-    Assigned to {providers.find(p => p.id === b.providerId)?.name || 'Unknown'}
-  </div>
-)} */}
-
-            {/* </td>
-                <td className="px-4 py-3">
-                  <span className={`inline-flex items-center px-2 py-1 rounded-full font-medium ${statusStyles[b.status]}`}>
-                    {statusIcons[b.status]} {b.status}
-                  </span>
-                </td> */}
-            {/* <td className="px-4 py-3 font-medium">{b.amount}</td>
-              </tr>
-            ))} */}
-            {currentBookings.map((b) => (
-              <tr key={b.id} className="border-t hover:bg-gray-50">
-                <td className="px-4 py-3 font-semibold">{b.id}</td>
-                <td className="px-4 py-3">{b.userName}</td>
-                <td className="px-4 py-3">
-                  {b.serviceBookingItems
-                    ?.map((item) => item.serviceName)
-                    .join(", ") || "N/A"}
+                <td className="px-4 py-3 font-semibold">
+                  {indexOfFirstBooking + index + 1}
                 </td>
+                <td className="px-4 py-3">{b.userName}</td>
+                <td className="px-4 py-3">{b.bookingType}</td>
+
                 <td className="px-4 py-3">
                   {new Date(b.bookingDate).toLocaleString()}
                 </td>
                 <td className="px-4 py-3">
                   <div className="flex items-center space-x-2">
-                    <select
-                      value={assignProvider[b.id] || ""}
-                      onChange={(e) =>
-                        handleSelectProvider(b.id, e.target.value)
-                      }
-                      className="border px-2 py-1 rounded-md"
-                    >
-                      <option value="">-- Select --</option>
-                      {/* {providers.map((p) => (
-                        <option key={p.id} value={p.id}>
-                          {p.name}
-                        </option>
-                      ))} */}
-                      {/* {providers.map((p) => (
-                        <option key={p.id} value={p.id}>
-                          {p.userName}
-                        </option>
-                      ))} */}
-                      {providers.map((p) => (
-  <option key={p.id} value={p.id}>
-    {p.providerName || p.userName}
-  </option>
-))}
-
-                    </select>
-                    <button
-                      onClick={() => confirmAssignProvider(b.id)}
-                      className="bg-blue-500 text-white text-xs px-2 py-1 rounded hover:bg-blue-600"
-                    >
-                      Confirm
-                    </button>
+                    {b.providerId ? (
+                      <span className="px-3 py-1 bg-emerald-100 text-emerald-700 text-sm rounded font-medium">
+                        {providers.find((p) => p.id === b.providerId)
+                          ?.providerName ||
+                          providers.find((p) => p.id === b.providerId)
+                            ?.userName ||
+                          "Assigned"}
+                      </span>
+                    ) : (
+                      <>
+                        <select
+                          value={assignProvider[b.id] || ""}
+                          onChange={(e) =>
+                            handleSelectProvider(b.id, e.target.value)
+                          }
+                          className="border px-2 py-1 rounded-md"
+                        >
+                          <option value="">-- Select --</option>
+                          {providers.map((p) => (
+                            <option key={p.id} value={p.id}>
+                              {p.providerName || p.userName}
+                            </option>
+                          ))}
+                        </select>
+                        <button
+                          onClick={() => confirmAssignProvider(b.id)}
+                          className="bg-emerald-500 text-white text-xs px-2 py-1 rounded hover:bg-emerald-600"
+                        >
+                          Confirm
+                        </button>
+                      </>
+                    )}
                   </div>
-                  {/* {b.providerId && (
-                    <div className="text-xs text-gray-500 mt-1">
-                      Assigned to{" "}
-                      {providers.find((p) => p.id === b.providerId)?.name ||
-                        "Unknown"}
-                    </div>
-                  )} */}
-                  {b.providerId && (
-  <div className="text-xs text-gray-500 mt-1">
-    Assigned to{" "}
-    {providers.find((p) => p.id === b.providerId)?.providerName ||
-      providers.find((p) => p.id === b.providerId)?.userName ||
-      "Unknown"}
-  </div>
-)}
-
                 </td>
+
                 <td className="px-4 py-3">
                   <span
                     className={`inline-flex items-center px-2 py-1 rounded-full font-medium ${
-                      statusStyles[b.bookingStatus]
+                      b.providerId
+                        ? statusStyles["Assigned"]
+                        : statusStyles[b.bookingStatus]
                     }`}
                   >
-                    {statusIcons[b.bookingStatus]} {b.bookingStatus}
+                    {b.providerId
+                      ? statusIcons["Assigned"]
+                      : statusIcons[b.bookingStatus]}{" "}
+                    {b.providerId ? "Assigned" : b.bookingStatus}
                   </span>
                 </td>
+
                 <td className="px-4 py-3 font-medium">₹{b.totalPrice}</td>
               </tr>
             ))}
@@ -357,7 +354,7 @@ if (!provider) {
       </div>
 
       {/* Pagination */}
-      <div className="flex justify-end mt-4 space-x-2">
+      <div className="flex justify-end mt-4 space-x-2 ">
         <button
           onClick={() => handlePageChange(currentPage - 1)}
           disabled={currentPage === 1}
@@ -370,7 +367,7 @@ if (!provider) {
             key={idx}
             onClick={() => handlePageChange(idx + 1)}
             className={`px-3 py-1 border rounded ${
-              currentPage === idx + 1 ? "bg-blue-500 text-white" : ""
+              currentPage === idx + 1 ? "bg-emerald-500 text-white" : ""
             }`}
           >
             {idx + 1}

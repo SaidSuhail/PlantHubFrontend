@@ -53,12 +53,12 @@ function ManagePlants() {
   };
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen ml-38 rounded-4xl">
-      {/* Header */}
+    <div className="p-6 bg-gradient-to-br from-emerald-50 to-white min-h-screen rounded-4xl ml-0 lg:ml-48">  
+    {/* Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Plants Management</h1>
-          <p className="text-gray-600 mt-2">Manage your plant inventory and stock levels</p>
+          <h1 className="text-3xl font-bold text-emerald-700">Plants Management</h1>
+          <p className="text-emerald-600 mt-2 ml-8">Manage your plant inventory and stock levels</p>
         </div>
         <button 
           onClick={() => setShowModal(true)}
@@ -72,7 +72,7 @@ function ManagePlants() {
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         {stats.map((stat, index) => (
-          <div key={index} className="bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition-shadow duration-200">
+          <div key={index} className="bg-gradient-to-br from-emerald-50 to-white rounded-xl shadow-sm p-6 hover:shadow-md transition-shadow duration-200">
             <div className="flex justify-between items-start">
               <div>
                 <p className="text-sm font-medium text-gray-500">{stat.title}</p>
@@ -186,7 +186,7 @@ function ManagePlants() {
 
       {/* Add Plant Modal */}
       {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div className="fixed inset-0  bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-xl shadow-xl w-full max-w-md">
             <div className="p-6">
               <div className="flex justify-between items-center mb-4">

@@ -30,7 +30,7 @@ const revenueData = [
 
 const ProviderDashboard = () => {
   return (
-    <div className="p-6 rounded-4xl space-y-6 bg-gradient-to-br from-emerald-50 to-white min-h-screen ml-44">
+    <div className="p-6 rounded-4xl space-y-6 bg-gradient-to-br from-emerald-50 to-white min-h-screen lg:ml-48">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:justify-between items-center">
         <div>

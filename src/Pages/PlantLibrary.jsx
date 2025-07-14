@@ -1,37 +1,41 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchPlants,SearchPlant,fetchCategories } from "../Features/adminSlice";
+import {
+  fetchPlants,
+  SearchPlant,
+  fetchCategories,
+} from "../Features/adminSlice";
 import { useNavigate } from "react-router-dom";
 
 function PlantLibrary() {
   const dispatch = useDispatch();
-  const { plants, status,categories } = useSelector((state) => state.admin);
+  const { plants, status, categories } = useSelector((state) => state.admin);
   const [visibleCount, setVisibleCount] = useState(12);
 
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCareLevel, setSelectedCareLevel] = useState("");
   const [selectedLight, setSelectedLight] = useState("");
   const [selectedWater, setSelectedWater] = useState("");
-const [selectedColor, setSelectedColor] = useState("");
-const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedColor, setSelectedColor] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
 
-const navigate = useNavigate();
+  const navigate = useNavigate();
   useEffect(() => {
     dispatch(fetchPlants());
     dispatch(fetchCategories());
   }, [dispatch]);
 
-useEffect(() => {
-  const delayDebounce = setTimeout(() => {
-    if (searchTerm.trim() === "") {
-      dispatch(fetchPlants());
-    } else {
-      dispatch(SearchPlant(searchTerm));
-    }
-  }, 500); // debounce delay (ms)
+  useEffect(() => {
+    const delayDebounce = setTimeout(() => {
+      if (searchTerm.trim() === "") {
+        dispatch(fetchPlants());
+      } else {
+        dispatch(SearchPlant(searchTerm));
+      }
+    }, 500); // debounce delay (ms)
 
-  return () => clearTimeout(delayDebounce);
-}, [dispatch, searchTerm]);
+    return () => clearTimeout(delayDebounce);
+  }, [dispatch, searchTerm]);
 
   // const filteredPlants = Array.isArray(plants)
   //   ? plants
@@ -55,29 +59,27 @@ useEffect(() => {
   //       )
   //   : [];
   const filteredPlants = Array.isArray(plants)
-  ? plants
-      .filter((plant) =>
-        selectedCareLevel ? plant.careLevel === selectedCareLevel : true
-      )
-      .filter((plant) =>
-        selectedLight ? plant.lightRequirement === selectedLight : true
-      )
-      .filter((plant) =>
-        selectedCategory ? plant.categoryName === selectedCategory : true
-      )
-      .filter((plant) =>
-        selectedColor ? plant.color === selectedColor : true
-      )
-      .filter((plant) =>
-        selectedWater ? plant.waterNeed === selectedWater : true
-      )
-  : [];
+    ? plants
+        .filter((plant) =>
+          selectedCareLevel ? plant.careLevel === selectedCareLevel : true
+        )
+        .filter((plant) =>
+          selectedLight ? plant.lightRequirement === selectedLight : true
+        )
+        .filter((plant) =>
+          selectedCategory ? plant.categoryName === selectedCategory : true
+        )
+        .filter((plant) =>
+          selectedColor ? plant.color === selectedColor : true
+        )
+        .filter((plant) =>
+          selectedWater ? plant.waterNeed === selectedWater : true
+        )
+    : [];
 
-const colors = Array.from(
-  new Set(plants.map((plant) => plant.color).filter(Boolean))
-);
-
- 
+  const colors = Array.from(
+    new Set(plants.map((plant) => plant.color).filter(Boolean))
+  );
 
   const visiblePlants = filteredPlants.slice(0, visibleCount);
 
@@ -101,7 +103,7 @@ const colors = Array.from(
             Search
           </button>
         </div>
-{/*        
+        {/*        
 <div className="mt-4 flex flex-wrap justify-center gap-2">
   {categories?.map((cat) => (
     <span key={cat.id} className="px-3 py-1 bg-gray-200 text-sm rounded-full">
@@ -109,30 +111,29 @@ const colors = Array.from(
     </span>
   ))}
 </div> */}
-<div className="mt-4 flex flex-wrap justify-center gap-2">
-  {categories?.map((cat) => (
-    <button
-      key={cat.id}
-      onClick={() =>
-        setSelectedCategory(
-          selectedCategory === cat.categoryName ? "" : cat.categoryName
-        )
-      }
-      className={`px-3 py-1 rounded-full text-sm ${
-        selectedCategory === cat.categoryName
-          ? "bg-green-600 text-white"
-          : "bg-gray-200 text-gray-700"
-      }`}
-    >
-      {cat.categoryName}
-    </button>
-  ))}
-</div>
-
+        <div className="mt-4 flex flex-wrap justify-center gap-2">
+          {categories?.map((cat) => (
+            <button
+              key={cat.id}
+              onClick={() =>
+                setSelectedCategory(
+                  selectedCategory === cat.categoryName ? "" : cat.categoryName
+                )
+              }
+              className={`px-3 py-1 rounded-full text-sm ${
+                selectedCategory === cat.categoryName
+                  ? "bg-green-600 text-white"
+                  : "bg-gray-200 text-gray-700"
+              }`}
+            >
+              {cat.categoryName}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Filter and Sort Section */}
-      <div className="flex flex-wrap justify-between items-center mb-6">
+      {/* <div className="flex flex-wrap justify-between items-center mb-6">
         <div className="flex gap-2 flex-wrap">
           <select
             value={selectedCareLevel}
@@ -170,21 +171,78 @@ const colors = Array.from(
 
         <div className="flex items-center gap-2">
           <label className="text-sm">Sort By</label>
-         
+
           <select
-  className="px-4 py-2 border rounded-md text-sm"
-  value={selectedColor}
-  onChange={(e) => setSelectedColor(e.target.value)}
->
-  <option value="">All Colors</option>
-  {colors.map((color) => (
-    <option key={color} value={color}>
-      {color}
-    </option>
-  ))}
-</select>
+            className="px-4 py-2 border rounded-md text-sm"
+            value={selectedColor}
+            onChange={(e) => setSelectedColor(e.target.value)}
+          >
+            <option value="">All Colors</option>
+            {colors.map((color) => (
+              <option key={color} value={color}>
+                {color}
+              </option>
+            ))}
+          </select>
         </div>
-      </div>
+      </div> */}
+      <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-6">
+  {/* Filters */}
+  <div className="flex flex-wrap gap-2">
+    <select
+      value={selectedCareLevel}
+      onChange={(e) => setSelectedCareLevel(e.target.value)}
+      // className="px-4 py-2 border rounded-md text-sm w-full sm:w-auto"
+      className="px-4 py-2 border border-gray-300 rounded-md text-sm w-full sm:w-auto bg-white shadow-sm  "
+
+    >
+      <option value="">Care Level</option>
+      <option value="Easy">Easy</option>
+      <option value="Medium">Medium</option>
+      <option value="Difficult">Difficult</option>
+    </select>
+
+    <select
+      value={selectedLight}
+      onChange={(e) => setSelectedLight(e.target.value)}
+      className="px-4 py-2 border  border-gray-300 rounded-md text-sm w-full sm:w-auto  bg-white shadow-sm "
+    >
+      <option value="">Light Requirements</option>
+      <option value="Low">Low</option>
+      <option value="Medium">Medium</option>
+      <option value="High">High</option>
+    </select>
+
+    <select
+      value={selectedWater}
+      onChange={(e) => setSelectedWater(e.target.value)}
+      className="px-4 py-2 border  border-gray-300 rounded-md text-sm w-full sm:w-auto  bg-white shadow-sm"
+    >
+      <option value="">Water Needs</option>
+      <option value="Low">Low</option>
+      <option value="Medium">Medium</option>
+      <option value="High">High</option>
+    </select>
+  </div>
+
+  {/* Sort */}
+  <div className="flex items-center gap-2 ml-auto">
+    <label className="text-sm">Sort By</label>
+    <select
+      className="px-4 py-2   border-gray-300 border rounded-md text-sm  bg-white shadow-sm"
+      value={selectedColor}
+      onChange={(e) => setSelectedColor(e.target.value)}
+    >
+      <option value="">All Colors</option>
+      {colors.map((color) => (
+        <option key={color} value={color}>
+          {color}
+        </option>
+      ))}
+    </select>
+  </div>
+</div>
+
 
       {/* Loading State */}
       {status === "loading" && (
@@ -227,11 +285,11 @@ const colors = Array.from(
               Learn More
             </button> */}
             <button
-  onClick={() => navigate(`/plant/${plant.id}`)}
-  className="mt-3 w-full bg-green-600 text-white py-2 rounded-md text-sm"
->
-  Learn More
-</button>
+              onClick={() => navigate(`/plant/${plant.id}`)}
+              className="mt-3 w-full bg-green-600 text-white py-2 rounded-md text-sm"
+            >
+              Learn More
+            </button>
           </div>
         ))}
       </div>

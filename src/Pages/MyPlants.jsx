@@ -191,14 +191,14 @@ function MyPlants() {
               "url('https://ca-times.brightspotcdn.com/dims4/default/a270b39/2147483647/strip/true/crop/3637x2425+0+0/resize/2400x1600!/quality/75/?url=https%3A%2F%2Fcalifornia-times-brightspot.s3.amazonaws.com%2F91%2F9a%2F748826294495bebf8b77fc8c51c9%2Foutdoorplants.jpg')",
           }}
         ></div>
-        <div className="absolute inset-0 bg-gradient-to-br from-green-900/80 via-emerald-800/70 to-teal-900/80 rounded-3xl mt-18"></div>
+        {/* <div className="absolute inset-0 bg-gradient-to-br from-green-900/80 via-emerald-800/70 to-teal-900/80 rounded-3xl mt-18"></div> */}
 
         <div className="absolute top-10 left-10 w-20 h-20 bg-white/10 rounded-full animate-pulse"></div>
         <div className="absolute bottom-10 right-10 w-32 h-32 bg-green-400/20 rounded-full animate-pulse"></div>
 
-        <div className="relative z-10 h-full flex items-center justify-center text-center px-4">
+        <div className="relative z-10 h-full flex items-center  mt-10 justify-center text-center px-4">
           <div className="space-y-4">
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white drop-shadow-lg">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold  text-white drop-shadow-lg">
               My Plant Collection
             </h1>
             <p className="text-base sm:text-lg text-green-100 drop-shadow-md max-w-2xl mx-auto">

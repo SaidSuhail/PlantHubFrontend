@@ -201,7 +201,7 @@ function MyPlants() {
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold  text-white drop-shadow-lg">
               My Plant Collection
             </h1>
-            <p className="text-base sm:text-lg text-green-100 drop-shadow-md max-w-2xl mx-auto">
+            <p className="text-base sm:text-xl  text-white drop-shadow-md max-w-2xl mx-auto">
               Your personal garden sanctuary - track and nurture your plants
             </p>
             <div className="flex justify-center gap-8 mt-6">

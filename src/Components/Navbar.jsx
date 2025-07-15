@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { FiBell, FiUser } from "react-icons/fi"; // Real user icon import
+import { FiBell, FiUser } from "react-icons/fi"; 
 import UserProfileModal from "./UserProfileModal";
 import { useDispatch, useSelector } from "react-redux";
 import { FiShoppingCart } from "react-icons/fi";
@@ -131,7 +131,7 @@ const Navbar = () => {
       </ul>
 
       {/* Right Icons (hidden on small screens) */}
-      <div className="hidden md:flex items-center gap-4">
+      <div className="flex items-center gap-3 ml-26">
         <Link to="/cart" className="relative">
           <FiShoppingCart className="w-5 h-5 text-gray-700 hover:text-green-600" />
           {cartCount > 0 && (
@@ -159,7 +159,7 @@ const Navbar = () => {
         )}
 
         <FiUser
-          className="w-5 h-5 text-gray-600 cursor-pointer"
+          className="w-5 h-5 text-gray-600 cursor-pointer hidden md:block"
           onClick={() => setShowProfileModal(true)}
         />
 
@@ -202,69 +202,6 @@ const Navbar = () => {
         </svg>
       </button>
 
-      {/* Mobile Menu
-      {isOpen && (
-        <ul className="absolute top-full left-0 right-0 bg-white shadow-md flex flex-col gap-4 px-6 py-4 md:hidden z-50">
-          <li>
-            <Link to="/" onClick={() => setIsOpen(false)}>
-              Home
-            </Link>
-          </li>
-          <li>
-            <Link to="/services" onClick={() => setIsOpen(false)}>
-              Services
-            </Link>
-          </li>
-          <li>
-            <Link to="/library" onClick={() => setIsOpen(false)}>
-              Plant Library
-            </Link>
-          </li>
-          <li>
-            <Link to="/myplants" onClick={() => setIsOpen(false)}>
-              My Plants
-            </Link>
-          </li>
-          <li>
-            <Link to="/plans" onClick={() => setIsOpen(false)}>
-              Plans
-            </Link>
-          </li>
-
-          <li>
-            <Link
-              to="/orders"
-              className="text-green-600 font-medium hover:underline"
-              onClick={() => setIsOpen(false)}
-            >
-              🧾 Bookings
-            </Link>
-          </li>
-          {!userId && (
-            <li>
-              <Link
-                to="/login"
-                className="text-gray-600 hover:underline"
-                onClick={() => setIsOpen(false)}
-              >
-                Sign In
-              </Link>
-            </li>
-          )}
-
-          <li>
-            <FiUser
-              className="w-5 h-5 text-gray-600 cursor-pointer"
-              onClick={() => setShowProfileModal(true)}
-            />
-
-            <UserProfileModal
-              isOpen={showProfileModal}
-              onClose={() => setShowProfileModal(false)}
-            />
-          </li>
-        </ul>
-      )} */}
       {isOpen && (
         <div className="fixed inset-0 z-50 flex">
           {/* Overlay with backdrop blur */}

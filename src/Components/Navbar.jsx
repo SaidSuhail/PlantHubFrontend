@@ -131,7 +131,7 @@ const Navbar = () => {
       </ul>
 
       {/* Right Icons (hidden on small screens) */}
-      <div className="flex items-center gap-3 ml-22">
+      <div className="flex items-center gap-3 ml-18">
         <Link to="/cart" className="relative">
           <FiShoppingCart className="w-5 h-5 text-gray-700 hover:text-green-600" />
           {cartCount > 0 && (

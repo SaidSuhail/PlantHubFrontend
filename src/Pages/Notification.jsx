@@ -1,4 +1,6 @@
 import React, { useEffect } from 'react';
+import Lottie from "lottie-react";
+import ErrorAnimation from '../assets/Error animation.json';
 import {
   fetchNotifications,
   markNotificationAsRead,
@@ -69,7 +71,18 @@ useEffect(() => {
           {loadingNotifications ? (
             <div className="text-center py-12 text-gray-500">Loading...</div>
           ) : notifications.length === 0 ? (
-            <div className="text-center py-12 text-gray-500">No notifications available</div>
+            // <div className="text-center py-12 text-gray-500">No notifications available</div>
+            <div className="text-center py-12 flex flex-col items-center justify-center text-gray-500">
+  <Lottie 
+    animationData={ErrorAnimation} 
+    loop={true} 
+    className="w-64 h-64"
+  />
+  <p className="mt-4 text-lg font-medium text-gray-700">
+    No notifications available
+  </p>
+</div>
+
           ) : (
             notifications.map((notification) => (
               <div

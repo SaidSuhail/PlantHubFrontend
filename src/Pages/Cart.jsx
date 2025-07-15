@@ -1,5 +1,7 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import Lottie from "lottie-react";
+import CartAnimation from '../assets/CartAnimation.json';
 import {
   decreaseCartQuantity,
   fetchCartItems,
@@ -51,7 +53,7 @@ function Cart() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 mt-16">
-      <h1 className="text-3xl font-bold text-gray-900 mb-8">My Cart</h1>
+      {/* <h1 className="text-3xl font-bold text-gray-900 mb-8">My Cart</h1> */}
       
       <Toaster position="top-right" richColors />
       
@@ -68,18 +70,48 @@ function Cart() {
       )}
       
       {Array.isArray(cartItems) && cartItems.length === 0 && !loadingCartItems ? (
-        <div className="text-center py-20">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-24 w-24 mx-auto text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-          </svg>
-          <p className="text-xl text-gray-500 mt-4">Your cart is empty</p>
-          <button 
-            onClick={() => navigate("/library")}
-            className="mt-6 px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition duration-300"
-          >
-            Continue Shopping
-          </button>
-        </div>
+//         <div className="text-center py-20">
+//           {/* <svg xmlns="http://www.w3.org/2000/svg" className="h-24 w-24 mx-auto text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+//             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+//           </svg> */}
+//           <div className="text-center py-12 flex flex-col items-center justify-center text-gray-500">
+//   <Lottie 
+//     animationData={CartAnimation} 
+//     loop={true} 
+//     className="w-64 h-64"
+//   />
+//   <p className="mt-4 text-lg font-medium text-gray-700">
+//     Cart Is Empty
+//   </p>
+// </div>
+
+//           {/* <p className="text-xl text-gray-500 mt-4">Your cart is empty</p> */}
+//           <button 
+//             onClick={() => navigate("/library")}
+//             className="mt-6 px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition duration-300"
+//           >
+//             Continue Shopping
+//           </button>
+//         </div>
+<div className="min-h-[60vh] flex flex-col items-center justify-center text-center text-gray-500 px-4">
+  <Lottie 
+    animationData={CartAnimation} 
+    loop={true} 
+    className="w-64 h-64" 
+  />
+
+  <p className="mt-6 text-xl font-semibold text-gray-700">
+    Your cart is empty
+  </p>
+
+  <button 
+    onClick={() => navigate("/library")}
+    className="mt-6 px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition duration-300"
+  >
+    Continue Shopping
+  </button>
+</div>
+
       ) : (
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Cart Items */}
